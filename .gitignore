@@ -48,6 +48,7 @@ SourceArt/**/*.tga
 # Binary Files
 #Binaries/*
 Binaries/*/*.pdb
+Binaries/Win64/PumpkinPlotPlundersEditor.target
 Plugins/*/Binaries/*
 
 # Builds
