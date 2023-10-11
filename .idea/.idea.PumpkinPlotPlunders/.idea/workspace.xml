@@ -10,12 +10,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="413c301f-a166-47d4-b270-ee3962df5716" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.PumpkinPlotPlunders/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.PumpkinPlotPlunders/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Actors/BP_PumpkinActor.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Actors/BP_PumpkinActor.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/PumpkinPlotPlunders/PumpkinActor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/PumpkinPlotPlunders/PumpkinActor.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/PumpkinPlotPlunders/PumpkinActor.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/PumpkinPlotPlunders/PumpkinActor.h" afterDir="false" />
-    </list>
+    <list default="true" id="413c301f-a166-47d4-b270-ee3962df5716" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -195,7 +190,7 @@
       <workItem from="1696935222749" duration="4905000" />
       <workItem from="1696949771808" duration="46000" />
       <workItem from="1696949882936" duration="12835000" />
-      <workItem from="1697015917255" duration="2818000" />
+      <workItem from="1697015917255" duration="3155000" />
     </task>
     <servers />
   </component>

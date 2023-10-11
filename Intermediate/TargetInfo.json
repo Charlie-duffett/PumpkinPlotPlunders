@@ -1,0 +1,14 @@
+{
+	"Targets": [
+		{
+			"Name": "PumpkinPlotPlunders",
+			"Path": "..\\Source\\PumpkinPlotPlunders.Target.cs",
+			"Type": "Game"
+		},
+		{
+			"Name": "PumpkinPlotPlundersEditor",
+			"Path": "..\\Source\\PumpkinPlotPlundersEditor.Target.cs",
+			"Type": "Editor"
+		}
+	]
+}

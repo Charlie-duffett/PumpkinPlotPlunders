@@ -1,0 +1,17 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "c:\\users\\charlie\\documents\\skillchallenge\\pumpkinplotplunders\\source\\pumpkinplotplunders\\pumpkinstaticmeshactor.cpp",
+        "ProvidedModule": "",
+        "PCH": "c:\\users\\charlie\\documents\\skillchallenge\\pumpkinplotplunders\\intermediate\\build\\win64\\x64\\pumpkinplotplunderseditor\\development\\engine\\sharedpch.engine.cpp20.h.pch",
+        "Includes": [
+            "c:\\users\\charlie\\documents\\skillchallenge\\pumpkinplotplunders\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\pumpkinplotplunders\\definitions.pumpkinplotplunders.h",
+            "c:\\users\\charlie\\documents\\skillchallenge\\pumpkinplotplunders\\source\\pumpkinplotplunders\\pumpkinstaticmeshactor.h",
+            "c:\\program files\\epic games\\ue_5.3\\engine\\source\\runtime\\engine\\classes\\engine\\staticmeshactor.h",
+            "c:\\program files\\epic games\\ue_5.3\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\staticmeshactor.generated.h",
+            "c:\\users\\charlie\\documents\\skillchallenge\\pumpkinplotplunders\\intermediate\\build\\win64\\unrealeditor\\inc\\pumpkinplotplunders\\uht\\pumpkinstaticmeshactor.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

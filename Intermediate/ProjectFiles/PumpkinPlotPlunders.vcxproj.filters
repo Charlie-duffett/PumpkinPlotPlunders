@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="..\..\PumpkinPlotPlunders.uproject" />
+    <Filter Include="Source">
+      <UniqueIdentifier>{F31BBDD1-B3E8-3BCC-9652-680E16935819}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\PumpkinPlotPlunders.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\Source\PumpkinPlotPlundersEditor.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\.gitignore" />
+    <None Include="..\..\.vsconfig" />
+    <None Include="..\..\README.md" />
+    <Filter Include="Config">
+      <UniqueIdentifier>{FA535FFB-25E1-3D20-B416-52F9BE21E06E}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Config\DefaultEditor.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEditorPerProjectUserSettings.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEditorSettings.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEngine.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultGame.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultInput.ini">
+      <Filter>Config</Filter>
+    </None>
+    <Filter Include="Source\PumpkinPlotPlunders">
+      <UniqueIdentifier>{8AFDB0E3-B748-38FF-AAE9-D1ED2E07F814}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\PumpkinPlotPlunders\PumpkinActor.cpp">
+      <Filter>Source\PumpkinPlotPlunders</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\PumpkinPlotPlunders\PumpkinActor.h">
+      <Filter>Source\PumpkinPlotPlunders</Filter>
+    </ClInclude>
+    <None Include="..\..\Source\PumpkinPlotPlunders\PumpkinPlotPlunders.Build.cs">
+      <Filter>Source\PumpkinPlotPlunders</Filter>
+    </None>
+    <ClCompile Include="..\..\Source\PumpkinPlotPlunders\PumpkinPlotPlunders.cpp">
+      <Filter>Source\PumpkinPlotPlunders</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\PumpkinPlotPlunders\PumpkinPlotPlunders.h">
+      <Filter>Source\PumpkinPlotPlunders</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\PumpkinPlotPlunders\PumpkinPlotPlundersCharacter.cpp">
+      <Filter>Source\PumpkinPlotPlunders</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\PumpkinPlotPlunders\PumpkinPlotPlundersCharacter.h">
+      <Filter>Source\PumpkinPlotPlunders</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\PumpkinPlotPlunders\PumpkinPlotPlundersGameMode.cpp">
+      <Filter>Source\PumpkinPlotPlunders</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\PumpkinPlotPlunders\PumpkinPlotPlundersGameMode.h">
+      <Filter>Source\PumpkinPlotPlunders</Filter>
+    </ClInclude>
+    <Filter Include="Source\PumpkinPlotPlunders\Interfaces">
+      <UniqueIdentifier>{E48471E5-8871-3776-9DA9-F1B7CC0E83B0}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\PumpkinPlotPlunders\Interfaces\Interact.cpp">
+      <Filter>Source\PumpkinPlotPlunders\Interfaces</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\PumpkinPlotPlunders\Interfaces\Interact.h">
+      <Filter>Source\PumpkinPlotPlunders\Interfaces</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
