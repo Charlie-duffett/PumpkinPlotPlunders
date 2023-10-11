@@ -1,5 +1,6 @@
 # Visual Studio 2015 user specific files
 .vs/
+.idea/
 
 # Compiled Object files
 *.slo
@@ -46,7 +47,9 @@ SourceArt/**/*.png
 SourceArt/**/*.tga
 
 # Binary Files
-Binaries/*
+#Binaries/*
+Binaries/*/*.pdb
+Binaries/Win64/PumpkinPlotPlundersEditor.target
 Plugins/*/Binaries/*
 
 # Builds
@@ -67,9 +70,8 @@ Build/*/**
 Saved/*
 
 # Compiled source files for the engine to use
-#Intermediate/*
-#Plugins/*/Intermediate/*
-Intermediate/ProjectFiles/*
+Intermediate/*
+Plugins/*/Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
