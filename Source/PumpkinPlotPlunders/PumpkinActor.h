@@ -40,15 +40,15 @@ public:
 	AlliedPumpkinState PumpkinState = AlliedPumpkinState::Growing;
 	
 	// Location and rotation of pumpkin when it is on the Enemy Team
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=PumpkinSettings)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=PumpkinSettings)
 	FVector EnemyPumpkinLocation = FVector();
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=PumpkinSettings)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=PumpkinSettings)
 	FRotator EnemyPumpkinRotation = FRotator();
 
 	// Location and rotation of pumpkin when it is on the Allied Team
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=PumpkinSettings)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=PumpkinSettings)
 	FVector AlliedPumpkinLocation = FVector();
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=PumpkinSettings)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=PumpkinSettings)
 	FRotator AlliedPumpkinRotation = FRotator();
 
 	// When pumpkin Evil state is changed in editor set the location and rotation variables
