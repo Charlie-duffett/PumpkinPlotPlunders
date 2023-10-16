@@ -11,12 +11,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="413c301f-a166-47d4-b270-ee3962df5716" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Content/Actors/3d_Models/PumpkinBody.uasset" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Content/Actors/3d_Models/fence_corner_low.uasset" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Content/Actors/3d_Models/fence_gate_low.uasset" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Content/Actors/3d_Models/fence_straight_low.uasset" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Content/__ExternalActors__/ThirdPerson/Maps/ThirdPersonMap/B/ME/4399SNVG2LGYCDGB2K3JXT.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Actors/BP_PumpkinActor.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Actors/BP_PumpkinActor.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.PumpkinPlotPlunders/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.PumpkinPlotPlunders/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/PumpkinPlotPlunders/PumpkinActor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/PumpkinPlotPlunders/PumpkinActor.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,7 +68,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "Merging Pumpkins",
+    "git-widget-placeholder": "Pumpkins",
     "ignore.virus.scanning.warn.message": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -221,7 +217,7 @@
       <workItem from="1697057306145" duration="599000" />
       <workItem from="1697132414760" duration="4649000" />
       <workItem from="1697369663628" duration="11700000" />
-      <workItem from="1697480622448" duration="701000" />
+      <workItem from="1697480622448" duration="870000" />
     </task>
     <servers />
   </component>

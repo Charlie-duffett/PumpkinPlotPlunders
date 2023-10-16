@@ -128,6 +128,8 @@ void APumpkinActor::StartGrowingState()
 
 	GetWorldTimerManager().SetTimer(WaterDelayTimer, this, &ThisClass::StartWaterDecay, DelayToStart,
 		false);
+
+	UpdatePumpkinTransform();
 	
 	UE_LOG(LogTemp, Display, TEXT("Started Growing State"))
 }
@@ -138,15 +140,23 @@ void APumpkinActor::StartHarvestableState()
 	PumpkinState = PumpkinState::Harvestable;
 	GetWorldTimerManager().SetTimer(StateTimer, this, &ThisClass::EndHarvestableState, HarvestTime,
 		false);
+
+	UpdatePumpkinTransform();
+	
 	UE_LOG(LogTemp, Display, TEXT("Started Harvestable State"))
 }
 
 void APumpkinActor::StartEvilState()
 {
 	ClearTimers();
+	
 	PumpkinState = PumpkinState::Evil;
+	
 	GetWorldTimerManager().SetTimer(StateTimer, this, &ThisClass::EndEvilState, EvilTime,
 		false);
+
+	UpdatePumpkinTransform();
+	
 	UE_LOG(LogTemp, Display, TEXT("Started Evil State"))
 }
 
