@@ -2,6 +2,8 @@
 
 
 #include "PumpkinActor.h"
+#include "PumpkinPlotPlundersCharacter.h"
+#include "SWarningOrErrorBox.h"
 #include "Math/UnrealMathUtility.h"
 
 // Sets default values
@@ -28,6 +30,34 @@ void APumpkinActor::Tick(float DeltaSeconds)
 	}
 }
 
+void APumpkinActor::Interact(TObjectPtr<AActor> InteractingActor)
+{
+	UE_LOG(LogTemp, Log, TEXT("Interacting"))
+	Harvest();
+}
+
+void APumpkinActor::Destroyed()
+{
+	Super::Destroyed();
+	UnRegister();
+}
+
+void APumpkinActor::Register()
+{
+	const TObjectPtr<APumpkinPlotPlundersCharacter> Player = Cast<APumpkinPlotPlundersCharacter>(
+		GetWorld()->GetFirstPlayerController()->GetCharacter());
+
+	Player->RegisterInteractable(this);
+}
+
+void APumpkinActor::UnRegister()
+{
+	const TObjectPtr<APumpkinPlotPlundersCharacter> Player = Cast<APumpkinPlotPlundersCharacter>(
+		GetWorld()->GetFirstPlayerController()->GetCharacter());
+
+	Player->UnRegisterInteractable(this);
+}
+
 // Called when the game starts or when spawned
 void APumpkinActor::BeginPlay()
 {
@@ -35,7 +65,7 @@ void APumpkinActor::BeginPlay()
 	// Setup pumpkin
 	UpdatePumpkinTransform();
 
-	StartGrowingState();
+	InitPumpkin();
 }
 
 void APumpkinActor::OnConstruction(const FTransform& Transform)
@@ -73,7 +103,7 @@ void APumpkinActor::DecayWater(float DeltaSeconds)
 {
 	if (bDecayWater)
 	{
-		CurrentWater -= DeltaSeconds;
+		CurrentWater -= DeltaSeconds * WaterDecayPerSecond;;
 
 		if (CurrentWater <= 0)
 		{
@@ -175,7 +205,7 @@ void APumpkinActor::EndHarvestableState()
 void APumpkinActor::EndEvilState()
 {
 	UE_LOG(LogTemp, Display, TEXT("Game over! Evil state has been ended"))
-	// End the game!
+	OnPumpkinEvilStateEnd.Broadcast();
 }
 
 void APumpkinActor::StartWaterDecay()
@@ -194,3 +224,30 @@ void APumpkinActor::DelayWaterDecay()
 		false);
 }
 
+void APumpkinActor::Harvest()
+{
+	if (PumpkinState == PumpkinState::Harvestable)
+	{
+		ClearTimers();
+		OnPumpkinHarvested.Broadcast();
+
+		// Disable pumpkin for a set time before "resetting it"
+		UnRegister();
+		
+		PumpkinStaticMeshComponent->SetVisibility(false);
+		PumpkinStaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+		GetWorldTimerManager().SetTimer(StateTimer, this, &ThisClass::InitPumpkin, ResetTime,
+		false);
+		UE_LOG(LogTemp, Warning, TEXT("Harvested!"))
+	}
+}
+
+void APumpkinActor::InitPumpkin()
+{
+	Register();
+	StartGrowingState();
+	
+	PumpkinStaticMeshComponent->SetVisibility(true);
+	PumpkinStaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+}

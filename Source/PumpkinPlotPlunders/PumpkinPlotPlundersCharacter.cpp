@@ -9,7 +9,9 @@
 #include "GameFramework/Controller.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "FindInBlueprintManager.h"
 #include "InputActionValue.h"
+#include "Interfaces/Interact.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -18,6 +20,8 @@ DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 APumpkinPlotPlundersCharacter::APumpkinPlotPlundersCharacter()
 {
+	PrimaryActorTick.bCanEverTick = true;
+	
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 		
@@ -54,6 +58,25 @@ APumpkinPlotPlundersCharacter::APumpkinPlotPlundersCharacter()
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 }
 
+void APumpkinPlotPlundersCharacter::RegisterInteractable(AActor* Interactable)
+{
+	InteractableActors.Add(Interactable);
+	UE_LOG(LogTemp, Warning, TEXT("Added Interactable"))
+}
+
+void APumpkinPlotPlundersCharacter::UnRegisterInteractable(AActor* Interactable)
+{
+	InteractableActors.Remove(Interactable);
+	UE_LOG(LogTemp, Warning, TEXT("Removed Interactable"))
+}
+
+void APumpkinPlotPlundersCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	CheckInteractables();
+}
+
 void APumpkinPlotPlundersCharacter::BeginPlay()
 {
 	// Call the base class  
@@ -77,9 +100,11 @@ void APumpkinPlotPlundersCharacter::SetupPlayerInputComponent(UInputComponent* P
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
 		
-		// Jumping
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+		// Interact
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &ThisClass::Interact);
+
+		// Use held item
+		EnhancedInputComponent->BindAction(UseItemAction, ETriggerEvent::Triggered, this, &ThisClass::UseItem);
 
 		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APumpkinPlotPlundersCharacter::Move);
@@ -127,4 +152,60 @@ void APumpkinPlotPlundersCharacter::Look(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+void APumpkinPlotPlundersCharacter::Interact()
+{
+	if (!ClosestActor.IsValid())
+	{
+		return;
+	}
+	IInteract* InteractableActor = Cast<IInteract>(ClosestActor);
+	if (InteractableActor != nullptr)
+	{
+		InteractableActor->Interact(this);
+	}
+}
+
+void APumpkinPlotPlundersCharacter::UseItem()
+{
+	UE_LOG(LogTemp, Error, TEXT("Use Item hasnt been implemented yet!"))
+}
+
+void APumpkinPlotPlundersCharacter::UpdateClosestActor(TWeakObjectPtr<AActor> NewActor, float DistanceToPlayer,
+                                                       float& ClosetActorDist)
+{
+	if (DistanceToPlayer > MaxInteractionDistance)
+	{
+		return;
+	}
+
+	const float DotProduct = this->GetDotProductTo(NewActor.Get());
+	
+	if (DotProduct >= 0)
+	{
+		ClosestActor = NewActor;
+		ClosetActorDist = DistanceToPlayer;
+	}
+}
+
+void APumpkinPlotPlundersCharacter::CheckInteractables()
+{
+	ClosestActor = nullptr;
+	float ClosestActorDist = FLT_MAX;
+	
+	for (const auto Interactable : InteractableActors)
+	{
+		if (!Interactable.IsValid())
+		{
+			continue;
+		}
+		
+		const float DistToInteractable = FVector::Dist(GetActorLocation(), Interactable->GetActorLocation());
+		
+		if (DistToInteractable < ClosestActorDist)
+		{
+			UpdateClosestActor(Interactable, DistToInteractable, ClosestActorDist);
+		}
+	}	
 }
