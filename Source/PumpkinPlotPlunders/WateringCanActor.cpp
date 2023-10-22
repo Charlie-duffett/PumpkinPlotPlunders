@@ -40,9 +40,9 @@ void AWateringCanActor::Activate()
 		return;
 	}
 
-	TWeakObjectPtr<IWaterable> ActorToWater = Cast<IWaterable>(PlayerCharacter->GetClosestActor());
+	IWaterable* ActorToWater = Cast<IWaterable>(PlayerCharacter->GetClosestActor());
 
-	if (!ActorToWater.IsValid())
+	if (ActorToWater == nullptr)
 	{
 		return;
 	}

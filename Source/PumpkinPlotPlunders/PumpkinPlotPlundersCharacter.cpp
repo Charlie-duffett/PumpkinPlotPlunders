@@ -80,7 +80,14 @@ void APumpkinPlotPlundersCharacter::Tick(float DeltaSeconds)
 
 bool APumpkinPlotPlundersCharacter::HoldItem(TWeakObjectPtr<AActor> Item)
 {
-	Item->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, "ItemSocket");
+	bool bHeldSuccessfully = false;
+	bHeldSuccessfully = Item->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, "ItemSocket");
+
+	if (bHeldSuccessfully)
+	{
+		return true;
+	}
+	return false;
 }
 
 void APumpkinPlotPlundersCharacter::BeginPlay()
@@ -177,8 +184,8 @@ void APumpkinPlotPlundersCharacter::UseItem()
 {
 	if (bIsHoldingItem)
 	{
-		TWeakObjectPtr<IUseable> Item = Cast<IUseable>(HeldItem);
-		if (!Item.IsValid())
+		IUseable* Item = Cast<IUseable>(HeldItem);
+		if (Item == nullptr)
 		{
 			return;
 		}
