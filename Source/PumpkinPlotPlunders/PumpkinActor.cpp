@@ -3,7 +3,6 @@
 
 #include "PumpkinActor.h"
 #include "PumpkinPlotPlundersCharacter.h"
-#include "SWarningOrErrorBox.h"
 #include "Math/UnrealMathUtility.h"
 
 // Sets default values
@@ -18,6 +17,7 @@ APumpkinActor::APumpkinActor()
 	PumpkinStaticMeshComponent->SetupAttachment(RootComponent);
 	
 	StateTimer.Invalidate();
+	WaterDelayTimer.Invalidate();
 }
 
 void APumpkinActor::Tick(float DeltaSeconds)
@@ -40,6 +40,19 @@ void APumpkinActor::Destroyed()
 {
 	Super::Destroyed();
 	UnRegister();
+}
+
+void APumpkinActor::DealDamage(float DamageAmount)
+{
+	if (PumpkinState == PumpkinState::Evil)
+	{
+		CurrentHealth -= DamageAmount;
+
+		if (CurrentHealth <= 0)
+		{
+			DisablePumpkin();
+		}
+	}
 }
 
 void APumpkinActor::Register()
@@ -231,14 +244,8 @@ void APumpkinActor::Harvest()
 		ClearTimers();
 		OnPumpkinHarvested.Broadcast();
 
-		// Disable pumpkin for a set time before "resetting it"
-		UnRegister();
+		DisablePumpkin();
 		
-		PumpkinStaticMeshComponent->SetVisibility(false);
-		PumpkinStaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
-		GetWorldTimerManager().SetTimer(StateTimer, this, &ThisClass::InitPumpkin, ResetTime,
-		false);
 		UE_LOG(LogTemp, Warning, TEXT("Harvested!"))
 	}
 }
@@ -250,4 +257,18 @@ void APumpkinActor::InitPumpkin()
 	
 	PumpkinStaticMeshComponent->SetVisibility(true);
 	PumpkinStaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+	CurrentHealth = MaxHealth;
+}
+
+void APumpkinActor::DisablePumpkin()
+{
+	// Disable pumpkin for a set time before "resetting it"
+	UnRegister();
+		
+	PumpkinStaticMeshComponent->SetVisibility(false);
+	PumpkinStaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	GetWorldTimerManager().SetTimer(StateTimer, this, &ThisClass::InitPumpkin, ResetTime,
+	false);
 }

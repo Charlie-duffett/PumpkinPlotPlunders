@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Interfaces/Damageable.h"
 #include "Interfaces/Interact.h"
 #include "PumpkinActor.generated.h"
 
@@ -24,6 +25,7 @@ UCLASS()
 class PUMPKINPLOTPLUNDERS_API APumpkinActor
 	: public AActor
 	, public IInteract
+	, public IDamageable
 {
 
 private:
@@ -39,6 +41,8 @@ public:
 
 	virtual void Destroyed() override;
 
+	virtual void DealDamage(float DamageAmount) override;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -50,7 +54,7 @@ public:
 	virtual void OnConstruction(const FTransform& Transform) override;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	UStaticMeshComponent* PumpkinStaticMeshComponent;
+	TObjectPtr<UStaticMeshComponent> PumpkinStaticMeshComponent;
 	
 
 	// State of the Pumpkin
@@ -85,6 +89,12 @@ public:
 	float WaterDecayPerSecond = 1.0f;
 
 	/* ----- Water settings end ----- */
+
+	// Max health of the pumpkin
+	float MaxHealth = 100.0f;
+	
+	// How much health the evil pumpkin has
+	float CurrentHealth = 100.0f;
 
 	// Time required (in seconds) for the pumpkin to full grow
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PumpkinTimers)
@@ -143,6 +153,8 @@ private:
 	void Harvest();
 
 	void InitPumpkin();
+
+	void DisablePumpkin();
 };
 
 

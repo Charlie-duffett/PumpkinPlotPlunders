@@ -3,22 +3,24 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "Engine/StaticMeshActor.h"
 #include "Interfaces/Interact.h"
 #include "Interfaces/Useable.h"
-#include "WateringCanActor.generated.h"
+#include "WateringCanStaticMeshActor.generated.h"
 
+/**
+ * 
+ */
 UCLASS()
-class PUMPKINPLOTPLUNDERS_API AWateringCanActor : public AActor
+class PUMPKINPLOTPLUNDERS_API AWateringCanStaticMeshActor : public AStaticMeshActor
 	,public IInteract
 	,public IUseable
 {
 	GENERATED_BODY()
-	
-public:	
-	// Sets default values for this actor's properties
-	AWateringCanActor();
 
+public:
+	AWateringCanStaticMeshActor();
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

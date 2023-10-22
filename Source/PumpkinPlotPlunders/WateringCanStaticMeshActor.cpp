@@ -1,26 +1,25 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "WateringCanActor.h"
-
+#include "WateringCanStaticMeshActor.h"
 #include "Interfaces/Waterable.h"
 
 // Sets default values
-AWateringCanActor::AWateringCanActor()
+AWateringCanStaticMeshActor::AWateringCanStaticMeshActor()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
 }
 
 // Called when the game starts or when spawned
-void AWateringCanActor::BeginPlay()
+void AWateringCanStaticMeshActor::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
-void AWateringCanActor::Interact(TObjectPtr<AActor> InteractingActor)
+void AWateringCanStaticMeshActor::Interact(TObjectPtr<AActor> InteractingActor)
 {
 	using PlayerType = APumpkinPlotPlundersCharacter;
 	TWeakObjectPtr<PlayerType> Player = Cast<PlayerType>(InteractingActor);
@@ -33,7 +32,7 @@ void AWateringCanActor::Interact(TObjectPtr<AActor> InteractingActor)
 	}
 }
 
-void AWateringCanActor::Activate()
+void AWateringCanStaticMeshActor::Activate()
 {
 	if (!PlayerCharacter.IsValid())
 	{
