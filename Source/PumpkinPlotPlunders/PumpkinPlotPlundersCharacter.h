@@ -52,6 +52,14 @@ class APumpkinPlotPlundersCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, Category = "Interaction Settings")
 	float MaxInteractionDistance = 30.0f;
 
+	TArray<TWeakObjectPtr<AActor>> InteractableActors;
+
+	TWeakObjectPtr<AActor> ClosestActor = nullptr;
+
+	bool bIsHoldingItem = false;
+
+	TWeakObjectPtr<AActor> HeldItem = nullptr;
+	
 public:
 	APumpkinPlotPlundersCharacter();
 	
@@ -59,6 +67,8 @@ public:
 	void UnRegisterInteractable(AActor* Interactable);
 	
 	virtual void Tick(float DeltaSeconds) override;
+
+	bool HoldItem(TWeakObjectPtr<AActor> Item);
 
 protected:
 	/** Called for movement input */
@@ -81,17 +91,13 @@ protected:
 
 	void UpdateClosestActor(TWeakObjectPtr<AActor> NewActor, float DistanceToPlayer, float& ClosetActorDist);
 
-private:
-	TArray<TWeakObjectPtr<AActor>> InteractableActors;
-
-	TWeakObjectPtr<AActor> ClosestActor = nullptr;
-
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
+	TWeakObjectPtr<AActor> GetClosestActor() const { return ClosestActor; }
 	
 };
 

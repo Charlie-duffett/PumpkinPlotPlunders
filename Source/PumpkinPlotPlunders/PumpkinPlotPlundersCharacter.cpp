@@ -12,6 +12,7 @@
 #include "FindInBlueprintManager.h"
 #include "InputActionValue.h"
 #include "Interfaces/Interact.h"
+#include "Interfaces/Useable.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -75,6 +76,11 @@ void APumpkinPlotPlundersCharacter::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 
 	CheckInteractables();
+}
+
+bool APumpkinPlotPlundersCharacter::HoldItem(TWeakObjectPtr<AActor> Item)
+{
+	Item->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, "ItemSocket");
 }
 
 void APumpkinPlotPlundersCharacter::BeginPlay()
@@ -169,7 +175,16 @@ void APumpkinPlotPlundersCharacter::Interact()
 
 void APumpkinPlotPlundersCharacter::UseItem()
 {
-	UE_LOG(LogTemp, Error, TEXT("Use Item hasnt been implemented yet!"))
+	if (bIsHoldingItem)
+	{
+		TWeakObjectPtr<IUseable> Item = Cast<IUseable>(HeldItem);
+		if (!Item.IsValid())
+		{
+			return;
+		}
+
+		Item->Activate();
+	}
 }
 
 void APumpkinPlotPlundersCharacter::UpdateClosestActor(TWeakObjectPtr<AActor> NewActor, float DistanceToPlayer,
