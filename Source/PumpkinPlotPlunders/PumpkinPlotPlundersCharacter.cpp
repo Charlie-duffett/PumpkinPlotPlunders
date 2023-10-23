@@ -83,8 +83,13 @@ bool APumpkinPlotPlundersCharacter::HoldItem(TWeakObjectPtr<AActor> Item)
 	bool bHeldSuccessfully = false;
 	bHeldSuccessfully = Item->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, "ItemSocket");
 
+	// pretend for now we are actually holding it!
+	bHeldSuccessfully = true;
 	if (bHeldSuccessfully)
 	{
+		bIsHoldingItem = true;
+		HeldItem = Item;
+		UE_LOG(LogTemp, Warning, TEXT("Holding item!"))
 		return true;
 	}
 	return false;
@@ -204,7 +209,7 @@ void APumpkinPlotPlundersCharacter::UpdateClosestActor(TWeakObjectPtr<AActor> Ne
 
 	const float DotProduct = this->GetDotProductTo(NewActor.Get());
 	
-	if (DotProduct >= 0)
+	if (DotProduct >= 0.0f)
 	{
 		ClosestActor = NewActor;
 		ClosetActorDist = DistanceToPlayer;
@@ -214,12 +219,13 @@ void APumpkinPlotPlundersCharacter::UpdateClosestActor(TWeakObjectPtr<AActor> Ne
 void APumpkinPlotPlundersCharacter::CheckInteractables()
 {
 	ClosestActor = nullptr;
-	float ClosestActorDist = FLT_MAX;
+	float ClosestActorDist = MaxInteractionDistance + 1.0f;
 	
 	for (const auto Interactable : InteractableActors)
 	{
 		if (!Interactable.IsValid())
 		{
+			int i = 0;
 			continue;
 		}
 		

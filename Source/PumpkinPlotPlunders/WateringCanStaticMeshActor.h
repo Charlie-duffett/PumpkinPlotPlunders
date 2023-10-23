@@ -25,13 +25,15 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	void Register();
+
 public:	
 	virtual void Interact(TObjectPtr<AActor> InteractingActor) override;
 	
 	virtual void Activate() override;
 
 	UPROPERTY(EditDefaultsOnly)
-	float WaterIncreasePerSecond = 5.0f;
+	float WaterIncreasePerSecond = 1000.0f;
 private:
 	TWeakObjectPtr<APumpkinPlotPlundersCharacter> PlayerCharacter = nullptr;
 };

@@ -55,6 +55,11 @@ void APumpkinActor::DealDamage(float DamageAmount)
 	}
 }
 
+void APumpkinActor::Water(float WaterIncrease)
+{
+	CurrentWater += WaterIncrease;
+}
+
 void APumpkinActor::Register()
 {
 	const TObjectPtr<APumpkinPlotPlundersCharacter> Player = Cast<APumpkinPlotPlundersCharacter>(

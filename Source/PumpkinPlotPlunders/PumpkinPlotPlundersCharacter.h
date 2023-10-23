@@ -54,6 +54,7 @@ class APumpkinPlotPlundersCharacter : public ACharacter
 
 	TArray<TWeakObjectPtr<AActor>> InteractableActors;
 
+	UPROPERTY(BlueprintReadOnly, Category = "ClosestActor", meta = (AllowPrivateAccess = "true"))
 	TWeakObjectPtr<AActor> ClosestActor = nullptr;
 
 	bool bIsHoldingItem = false;

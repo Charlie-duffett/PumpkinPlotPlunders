@@ -16,7 +16,16 @@ AWateringCanStaticMeshActor::AWateringCanStaticMeshActor()
 void AWateringCanStaticMeshActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	Register();
+}
+
+void AWateringCanStaticMeshActor::Register()
+{
+	const TObjectPtr<APumpkinPlotPlundersCharacter> Player = Cast<APumpkinPlotPlundersCharacter>(
+		GetWorld()->GetFirstPlayerController()->GetCharacter());
+
+	Player->RegisterInteractable(this);
 }
 
 void AWateringCanStaticMeshActor::Interact(TObjectPtr<AActor> InteractingActor)
