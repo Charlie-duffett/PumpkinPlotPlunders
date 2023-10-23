@@ -3,13 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PumpkinPlotPlunders/PumpkinPlotPlundersCharacter.h"
 #include "UObject/Interface.h"
-#include "Interact.generated.h"
+#include "Damageable.generated.h"
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
-class UInteract : public UInterface
+class UDamageable : public UInterface
 {
 	GENERATED_BODY()
 };
@@ -17,11 +16,11 @@ class UInteract : public UInterface
 /**
  * 
  */
-class PUMPKINPLOTPLUNDERS_API IInteract
+class PUMPKINPLOTPLUNDERS_API IDamageable
 {
 	GENERATED_BODY()
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual void Interact(TObjectPtr<AActor> InteractingActor);
+	virtual void DealDamage(float DamageAmount);
 };

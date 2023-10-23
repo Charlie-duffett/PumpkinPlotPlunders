@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Interfaces/Damageable.h"
+#include "Interfaces/Interact.h"
+#include "Interfaces/Waterable.h"
 #include "PumpkinActor.generated.h"
 
 class UStaticMeshComponent;
@@ -16,8 +19,15 @@ enum class PumpkinState
 	Evil,
 };
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FHarvestDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEvilDelegate);
+
 UCLASS()
-class PUMPKINPLOTPLUNDERS_API APumpkinActor : public AActor
+class PUMPKINPLOTPLUNDERS_API APumpkinActor
+	: public AActor
+	, public IInteract
+	, public IDamageable
+	, public IWaterable
 {
 
 private:
@@ -28,15 +38,27 @@ public:
 	APumpkinActor();
 
 	virtual void Tick(float DeltaSeconds) override;
+
+	virtual void Interact(TObjectPtr<AActor> InteractingActor) override;
+
+	virtual void Destroyed() override;
+
+	virtual void DealDamage(float DamageAmount) override;
+
+	virtual void Water(float WaterIncrease) override;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	void Register();
+	void UnRegister();
+	
 public:
 	virtual void OnConstruction(const FTransform& Transform) override;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	UStaticMeshComponent* PumpkinStaticMeshComponent;
+	TObjectPtr<UStaticMeshComponent> PumpkinStaticMeshComponent;
 	
 
 	// State of the Pumpkin
@@ -72,6 +94,14 @@ public:
 
 	/* ----- Water settings end ----- */
 
+	// Max health of the pumpkin
+	UPROPERTY(BlueprintReadOnly, Category=PumpkinHealth)
+	float MaxHealth = 100.0f;
+	
+	// How much health the evil pumpkin has
+	UPROPERTY(BlueprintReadOnly, Category=PumpkinHealth)
+	float CurrentHealth = 100.0f;
+
 	// Time required (in seconds) for the pumpkin to full grow
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PumpkinTimers)
 	float GrowingTime = 15.0f;
@@ -83,9 +113,20 @@ public:
 	// Time limit (in seconds) for the pumpkin to be destroyed before causing failure condition
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PumpkinTimers)
 	float EvilTime = 15.0f;
+
+	// Time limit (in seconds) for the pumpkin to be reset after being harvested
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PumpkinTimers)
+	float ResetTime = 5.0f;
+
+	// Harvest Delegate instance
+	FHarvestDelegate OnPumpkinHarvested;
+
+	// Evil state end Delegate instance
+	FEvilDelegate OnPumpkinEvilStateEnd;
 	
 	// Update transform of pumpkin (called when team changes)
 	void UpdatePumpkinTransform();
+	
 
 private:
 	// Timers for all states
@@ -114,4 +155,12 @@ private:
 	void StartWaterDecay();
 
 	void DelayWaterDecay();
+
+	void Harvest();
+
+	void InitPumpkin();
+
+	void DisablePumpkin();
 };
+
+

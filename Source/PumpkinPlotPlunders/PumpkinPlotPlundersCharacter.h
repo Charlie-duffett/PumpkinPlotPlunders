@@ -7,6 +7,7 @@
 #include "Logging/LogMacros.h"
 #include "PumpkinPlotPlundersCharacter.generated.h"
 
+class IInteract;
 class USpringArmComponent;
 class UCameraComponent;
 class UInputMappingContext;
@@ -32,9 +33,13 @@ class APumpkinPlotPlundersCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* DefaultMappingContext;
 
-	/** Jump Input Action */
+	/** Interact Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* JumpAction;
+	UInputAction* InteractAction;
+	
+	/** Use Item Input Action */
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+    UInputAction* UseItemAction;
 
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -44,30 +49,56 @@ class APumpkinPlotPlundersCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
 
+	UPROPERTY(EditAnywhere, Category = "Interaction Settings")
+	float MaxInteractionDistance = 30.0f;
+
+	TArray<TWeakObjectPtr<AActor>> InteractableActors;
+
+	UPROPERTY(BlueprintReadOnly, Category = "ClosestActor", meta = (AllowPrivateAccess = "true"))
+	TWeakObjectPtr<AActor> ClosestActor = nullptr;
+
+	bool bIsHoldingItem = false;
+
+	TWeakObjectPtr<AActor> HeldItem = nullptr;
+	
 public:
 	APumpkinPlotPlundersCharacter();
 	
+	void RegisterInteractable(AActor* Interactable);
+	void UnRegisterInteractable(AActor* Interactable);
+	
+	virtual void Tick(float DeltaSeconds) override;
+
+	bool HoldItem(TWeakObjectPtr<AActor> Item);
 
 protected:
-
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
-			
 
-protected:
+	void Interact();
+
+	void UseItem();
+
+	void CheckInteractables();
+	
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
 	// To add mapping context
 	virtual void BeginPlay();
 
+	void UpdateClosestActor(TWeakObjectPtr<AActor> NewActor, float DistanceToPlayer, float& ClosetActorDist);
+
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+	TWeakObjectPtr<AActor> GetClosestActor() const { return ClosestActor; }
+	
 };
 
