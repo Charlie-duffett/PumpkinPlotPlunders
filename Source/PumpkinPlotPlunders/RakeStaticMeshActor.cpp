@@ -12,7 +12,17 @@ ARakeStaticMeshActor::ARakeStaticMeshActor()
 void ARakeStaticMeshActor::BeginPlay()
 {
 	Super::BeginPlay();
+
+	Register();
 	
+}
+
+void ARakeStaticMeshActor::Register()
+{
+	const TObjectPtr<APumpkinPlotPlundersCharacter> Player = Cast<APumpkinPlotPlundersCharacter>(
+		GetWorld()->GetFirstPlayerController()->GetCharacter());
+
+	Player->RegisterInteractable(this);
 }
 
 void ARakeStaticMeshActor::Interact(TObjectPtr<AActor> InteractingActor)
@@ -31,6 +41,7 @@ void ARakeStaticMeshActor::Interact(TObjectPtr<AActor> InteractingActor)
 void ARakeStaticMeshActor::Activate()
 {
 	// Play Damage animation
+	ApplyDamage();
 }
 
 
