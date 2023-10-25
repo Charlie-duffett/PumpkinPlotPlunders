@@ -18,6 +18,7 @@ APumpkinActor::APumpkinActor()
 	
 	StateTimer.Invalidate();
 	WaterDelayTimer.Invalidate();
+	DamageCooldownTimer.Invalidate();
 }
 
 void APumpkinActor::Tick(float DeltaSeconds)
@@ -44,20 +45,28 @@ void APumpkinActor::Destroyed()
 
 void APumpkinActor::DealDamage(float DamageAmount)
 {
-	if (PumpkinState == PumpkinState::Evil)
+	if (PumpkinState == PumpkinState::Evil && bCanDamage)
 	{
+		bCanDamage = false;
 		CurrentHealth -= DamageAmount;
 
 		if (CurrentHealth <= 0)
 		{
 			DisablePumpkin();
 		}
+
+		GetWorldTimerManager().SetTimer(DamageCooldownTimer, this, &ThisClass::EnableDamage, 3.0f,
+		false);
 	}
 }
 
 void APumpkinActor::Water(float WaterIncrease)
 {
-	CurrentWater += WaterIncrease;
+	if (PumpkinState == PumpkinState::Growing)
+	{
+		// Adding the decay to counter the fact we are also removing the decay each tick
+		CurrentWater += WaterIncrease + (WaterDecayPerSecond * GetWorld()->GetDeltaSeconds());
+	}
 }
 
 void APumpkinActor::Register()
@@ -115,6 +124,7 @@ void APumpkinActor::ClearTimers()
 {
 	GetWorldTimerManager().ClearTimer(StateTimer);
 	GetWorldTimerManager().ClearTimer(WaterDelayTimer);
+	GetWorldTimerManager().ClearTimer(DamageCooldownTimer);
 }
 
 void APumpkinActor::DecayWater(float DeltaSeconds)
@@ -134,7 +144,7 @@ void APumpkinActor::DecayWater(float DeltaSeconds)
 
 void APumpkinActor::ChangeState(enum PumpkinState NewState)
 {
-	switch (PumpkinState)
+	switch (NewState)
 	{
 	case PumpkinState::Growing :
 		{
@@ -197,6 +207,8 @@ void APumpkinActor::StartHarvestableState()
 void APumpkinActor::StartEvilState()
 {
 	ClearTimers();
+
+	bCanDamage = true;
 	
 	PumpkinState = PumpkinState::Evil;
 	
@@ -276,4 +288,9 @@ void APumpkinActor::DisablePumpkin()
 
 	GetWorldTimerManager().SetTimer(StateTimer, this, &ThisClass::InitPumpkin, ResetTime,
 	false);
+}
+
+void APumpkinActor::EnableDamage()
+{
+	bCanDamage = true;
 }

@@ -24,6 +24,8 @@ public:
 protected:	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	
+	void Register();
 
 public:	
 	virtual void Interact(TObjectPtr<AActor> InteractingActor) override;

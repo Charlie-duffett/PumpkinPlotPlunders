@@ -129,10 +129,14 @@ public:
 	
 
 private:
+	bool bCanDamage = true;
+	
 	// Timers for all states
 	FTimerHandle StateTimer;
 	
 	FTimerHandle WaterDelayTimer;
+
+	FTimerHandle DamageCooldownTimer;
 	
 	void ClearTimers();
 	
@@ -161,6 +165,8 @@ private:
 	void InitPumpkin();
 
 	void DisablePumpkin();
+
+	void EnableDamage();
 };
 
 
