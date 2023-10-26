@@ -71,18 +71,23 @@ void APumpkinActor::Water(float WaterIncrease)
 
 void APumpkinActor::Register()
 {
-	const TObjectPtr<APumpkinPlotPlundersCharacter> Player = Cast<APumpkinPlotPlundersCharacter>(
-		GetWorld()->GetFirstPlayerController()->GetCharacter());
+	const TWeakObjectPtr<APumpkinPlotPlundersCharacter> Player = GetPumpkinCharacter();
 
-	Player->RegisterInteractable(this);
+	if (Player.IsValid())
+	{
+		Player->RegisterInteractable(this);
+	}
 }
 
 void APumpkinActor::UnRegister()
 {
-	const TObjectPtr<APumpkinPlotPlundersCharacter> Player = Cast<APumpkinPlotPlundersCharacter>(
-		GetWorld()->GetFirstPlayerController()->GetCharacter());
+	const TWeakObjectPtr<APumpkinPlotPlundersCharacter> Player = GetPumpkinCharacter();
 
-	Player->UnRegisterInteractable(this);
+
+	if (Player.IsValid())
+	{
+		Player->UnRegisterInteractable(this);
+	}
 }
 
 // Called when the game starts or when spawned
@@ -108,6 +113,11 @@ void APumpkinActor::OnConstruction(const FTransform& Transform)
 
 void APumpkinActor::UpdatePumpkinTransform()
 {
+	if (!IsValid(PumpkinStaticMeshComponent))
+	{
+		return;
+	}
+	
 	if (PumpkinState == PumpkinState::Evil)
 	{
 		PumpkinStaticMeshComponent->SetRelativeLocation(EnemyPumpkinLocation);
@@ -293,4 +303,27 @@ void APumpkinActor::DisablePumpkin()
 void APumpkinActor::EnableDamage()
 {
 	bCanDamage = true;
+}
+
+TWeakObjectPtr<APumpkinPlotPlundersCharacter> APumpkinActor::GetPumpkinCharacter()
+{
+	const TWeakObjectPtr<UWorld> World = GetWorld();
+	if (!World.IsValid())
+	{
+		return nullptr;
+	}
+	
+	const TWeakObjectPtr<APlayerController> Controller = World->GetFirstPlayerController();
+	if (!Controller.IsValid())
+	{
+		return nullptr;
+	}
+	
+	const TWeakObjectPtr<ACharacter> Character = Controller->GetCharacter();
+	if (!Character.IsValid())
+	{
+		return nullptr;
+	}
+	
+	return Cast<APumpkinPlotPlundersCharacter>(Character);
 }
