@@ -167,6 +167,8 @@ private:
 	void DisablePumpkin();
 
 	void EnableDamage();
+
+	TWeakObjectPtr<APumpkinPlotPlundersCharacter> GetPumpkinCharacter();
 };
 
 
