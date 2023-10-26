@@ -14,9 +14,9 @@ class UStaticMeshComponent;
 UENUM(BlueprintType)
 enum class PumpkinState : uint8
 {
-	Growing,
-	Harvestable,
-	Evil,
+	Growing		UMETA(DisplayName="Growing"),
+	Harvestable	UMETA(DisplayName="Harvestable"),
+	Evil		UMETA(DisplayName="Evil"),
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FHarvestDelegate);
