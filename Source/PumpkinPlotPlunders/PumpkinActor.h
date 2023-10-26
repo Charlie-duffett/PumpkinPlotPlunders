@@ -11,7 +11,7 @@
 
 class UStaticMeshComponent;
 
-UENUM()
+UENUM(BlueprintType)
 enum class PumpkinState
 {
 	Growing,
@@ -63,7 +63,7 @@ public:
 
 	// State of the Pumpkin
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=PumpkinSettings)
-	PumpkinState PumpkinState = PumpkinState::Growing;	
+	PumpkinState CurrentPumpkinState = PumpkinState::Growing;	
 	// Location and rotation of pumpkin when it is on the Enemy Team
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=PumpkinSettings)
 	FVector EnemyPumpkinLocation = FVector();

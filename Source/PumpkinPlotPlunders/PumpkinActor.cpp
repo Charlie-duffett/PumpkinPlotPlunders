@@ -25,7 +25,7 @@ void APumpkinActor::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if (PumpkinState == PumpkinState::Growing)
+	if (CurrentPumpkinState == PumpkinState::Growing)
 	{
 		DecayWater(DeltaSeconds);
 	}
@@ -45,7 +45,7 @@ void APumpkinActor::Destroyed()
 
 void APumpkinActor::DealDamage(float DamageAmount)
 {
-	if (PumpkinState == PumpkinState::Evil && bCanDamage)
+	if (CurrentPumpkinState == PumpkinState::Evil && bCanDamage)
 	{
 		bCanDamage = false;
 		CurrentHealth -= DamageAmount;
@@ -62,7 +62,7 @@ void APumpkinActor::DealDamage(float DamageAmount)
 
 void APumpkinActor::Water(float WaterIncrease)
 {
-	if (PumpkinState == PumpkinState::Growing)
+	if (CurrentPumpkinState == PumpkinState::Growing)
 	{
 		// Adding the decay to counter the fact we are also removing the decay each tick
 		CurrentWater += WaterIncrease + (WaterDecayPerSecond * GetWorld()->GetDeltaSeconds());
@@ -118,7 +118,7 @@ void APumpkinActor::UpdatePumpkinTransform()
 		return;
 	}
 	
-	if (PumpkinState == PumpkinState::Evil)
+	if (CurrentPumpkinState == PumpkinState::Evil)
 	{
 		PumpkinStaticMeshComponent->SetRelativeLocation(EnemyPumpkinLocation);
 		PumpkinStaticMeshComponent->SetRelativeRotation(EnemyPumpkinRotation);
@@ -183,7 +183,7 @@ void APumpkinActor::StartGrowingState()
 {
 	ClearTimers();
 
-	PumpkinState = PumpkinState::Growing;
+	CurrentPumpkinState = PumpkinState::Growing;
 	
 	// Reset water variables
 	bDecayWater = false;
@@ -205,7 +205,7 @@ void APumpkinActor::StartGrowingState()
 void APumpkinActor::StartHarvestableState()
 {
 	ClearTimers();
-	PumpkinState = PumpkinState::Harvestable;
+	CurrentPumpkinState = PumpkinState::Harvestable;
 	GetWorldTimerManager().SetTimer(StateTimer, this, &ThisClass::EndHarvestableState, HarvestTime,
 		false);
 
@@ -220,7 +220,7 @@ void APumpkinActor::StartEvilState()
 
 	bCanDamage = true;
 	
-	PumpkinState = PumpkinState::Evil;
+	CurrentPumpkinState = PumpkinState::Evil;
 	
 	GetWorldTimerManager().SetTimer(StateTimer, this, &ThisClass::EndEvilState, EvilTime,
 		false);
@@ -266,7 +266,7 @@ void APumpkinActor::DelayWaterDecay()
 
 void APumpkinActor::Harvest()
 {
-	if (PumpkinState == PumpkinState::Harvestable)
+	if (CurrentPumpkinState == PumpkinState::Harvestable)
 	{
 		ClearTimers();
 		OnPumpkinHarvested.Broadcast();
