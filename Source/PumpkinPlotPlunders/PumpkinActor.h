@@ -12,7 +12,7 @@
 class UStaticMeshComponent;
 
 UENUM(BlueprintType)
-enum class PumpkinState
+enum class PumpkinState : uint8
 {
 	Growing,
 	Harvestable,
