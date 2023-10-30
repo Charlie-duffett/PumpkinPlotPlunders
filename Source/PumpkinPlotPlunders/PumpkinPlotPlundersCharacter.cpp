@@ -77,13 +77,28 @@ void APumpkinPlotPlundersCharacter::Tick(float DeltaSeconds)
 	CheckInteractables();
 }
 
-bool APumpkinPlotPlundersCharacter::HoldItem(TWeakObjectPtr<AActor> Item)
+bool APumpkinPlotPlundersCharacter::HoldItem(TWeakObjectPtr<AActor> Item, bool IsRake)
 {
-	bool bHeldSuccessfully = false;
-	bHeldSuccessfully = Item->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, "HoldWateringCan");
+	if (bIsHoldingItem)
+	{
+		bIsHoldingItem = false;
+		HeldItem->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+		HeldItem->SetActorTransform(HeldItemTransform);
+	}
 
-	// pretend for now we are actually holding it!
-	bHeldSuccessfully = true;
+	HeldItemTransform = Item->GetActorTransform();
+	
+	bool bHeldSuccessfully = false;
+	if (IsRake)
+	{
+		bHeldSuccessfully = Item->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, "HoldRake");
+	}
+	else
+	{
+		bHeldSuccessfully = Item->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, "HoldWateringCan");
+	}
+	
+
 	if (bHeldSuccessfully)
 	{
 		bIsHoldingItem = true;

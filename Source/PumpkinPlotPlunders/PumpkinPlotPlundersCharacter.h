@@ -60,6 +60,8 @@ class APumpkinPlotPlundersCharacter : public ACharacter
 	bool bIsHoldingItem = false;
 
 	TWeakObjectPtr<AActor> HeldItem = nullptr;
+
+	FTransform HeldItemTransform;
 	
 public:
 	APumpkinPlotPlundersCharacter();
@@ -69,7 +71,7 @@ public:
 	
 	virtual void Tick(float DeltaSeconds) override;
 
-	bool HoldItem(TWeakObjectPtr<AActor> Item);
+	bool HoldItem(TWeakObjectPtr<AActor> Item, bool IsRake);
 
 protected:
 	/** Called for movement input */
