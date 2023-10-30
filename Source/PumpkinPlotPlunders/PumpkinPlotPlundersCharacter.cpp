@@ -9,7 +9,6 @@
 #include "GameFramework/Controller.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "FindInBlueprintManager.h"
 #include "InputActionValue.h"
 #include "Interfaces/Interact.h"
 #include "Interfaces/Useable.h"
@@ -81,7 +80,7 @@ void APumpkinPlotPlundersCharacter::Tick(float DeltaSeconds)
 bool APumpkinPlotPlundersCharacter::HoldItem(TWeakObjectPtr<AActor> Item)
 {
 	bool bHeldSuccessfully = false;
-	bHeldSuccessfully = Item->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, "ItemSocket");
+	bHeldSuccessfully = Item->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, "HoldWateringCan");
 
 	// pretend for now we are actually holding it!
 	bHeldSuccessfully = true;
@@ -207,6 +206,11 @@ void APumpkinPlotPlundersCharacter::UpdateClosestActor(TWeakObjectPtr<AActor> Ne
 		return;
 	}
 
+	// We dont want to interact with the item we are holding!
+	if (bIsHoldingItem && NewActor == HeldItem)
+	{
+		return;
+	}
 	const float DotProduct = this->GetDotProductTo(NewActor.Get());
 	
 	if (DotProduct >= 0.0f)

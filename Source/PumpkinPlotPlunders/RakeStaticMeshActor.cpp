@@ -60,6 +60,6 @@ void ARakeStaticMeshActor::ApplyDamage()
 		return;
 	}
 
-	ActorToDamage->DealDamage(DamageAmount);
+	ActorToDamage->DealDamage(DamagePerSecond * GetWorld()->GetDeltaSeconds());
 }
 
