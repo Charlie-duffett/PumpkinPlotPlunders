@@ -47,7 +47,7 @@ void APumpkinActor::DealDamage(float DamageAmount)
 {
 	if (CurrentPumpkinState == PumpkinState::Evil && bCanDamage)
 	{
-		bCanDamage = false;
+		bCanDamage = true;
 		CurrentHealth -= DamageAmount;
 
 		if (CurrentHealth <= 0)
@@ -55,8 +55,8 @@ void APumpkinActor::DealDamage(float DamageAmount)
 			DisablePumpkin();
 		}
 
-		GetWorldTimerManager().SetTimer(DamageCooldownTimer, this, &ThisClass::EnableDamage, 3.0f,
-		false);
+		// GetWorldTimerManager().SetTimer(DamageCooldownTimer, this, &ThisClass::EnableDamage, 3.0f,
+		// false);
 	}
 }
 
