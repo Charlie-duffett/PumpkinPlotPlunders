@@ -33,7 +33,7 @@ void ARakeStaticMeshActor::Interact(TObjectPtr<AActor> InteractingActor)
 	if (Player.IsValid())
 	{
 		// Attach to player etc
-		Player->HoldItem(this);
+		Player->HoldItem(this, false);
 		PlayerCharacter = Player;
 	}
 }
@@ -60,6 +60,6 @@ void ARakeStaticMeshActor::ApplyDamage()
 		return;
 	}
 
-	ActorToDamage->DealDamage(DamageAmount);
+	ActorToDamage->DealDamage(DamagePerSecond * GetWorld()->GetDeltaSeconds());
 }
 

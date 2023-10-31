@@ -34,6 +34,15 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	float WaterIncreasePerSecond = 1000.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PumpkinWater)
+	float MaxWater = 100.0f;
+
+	UPROPERTY(BlueprintReadOnly)
+	float CurrentWater = 0.0f;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PumpkinWater)
+	float WaterUsePerSecond = 50.0f;
 private:
 	TWeakObjectPtr<APumpkinPlotPlundersCharacter> PlayerCharacter = nullptr;
 };
