@@ -17,6 +17,7 @@ void AWateringCanStaticMeshActor::BeginPlay()
 {
 	Super::BeginPlay();
 
+	CurrentWater = MaxWater;
 	Register();
 }
 
@@ -43,7 +44,7 @@ void AWateringCanStaticMeshActor::Interact(TObjectPtr<AActor> InteractingActor)
 
 void AWateringCanStaticMeshActor::Activate()
 {
-	if (!PlayerCharacter.IsValid())
+	if (!PlayerCharacter.IsValid() || CurrentWater <= 0.0f)
 	{
 		return;
 	}
@@ -55,6 +56,8 @@ void AWateringCanStaticMeshActor::Activate()
 		return;
 	}
 
+	CurrentWater -= WaterUsePerSecond * GetWorld()->GetDeltaSeconds();
+	
 	ActorToWater->Water(WaterIncreasePerSecond * GetWorld()->GetDeltaSeconds());
 }
 
