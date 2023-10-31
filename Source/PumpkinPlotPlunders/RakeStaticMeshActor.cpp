@@ -25,7 +25,7 @@ void ARakeStaticMeshActor::Register()
 	Player->RegisterInteractable(this);
 }
 
-void ARakeStaticMeshActor::Interact(TObjectPtr<AActor> InteractingActor)
+void ARakeStaticMeshActor::Interact(TWeakObjectPtr<AActor> InteractingActor)
 {
 	using PlayerType = APumpkinPlotPlundersCharacter;
 	TWeakObjectPtr<PlayerType> Player = Cast<PlayerType>(InteractingActor);

@@ -39,13 +39,15 @@ public:
 
 	virtual void Tick(float DeltaSeconds) override;
 
-	virtual void Interact(TObjectPtr<AActor> InteractingActor) override;
+	virtual void Interact(TWeakObjectPtr<AActor> InteractingActor) override;
 
 	virtual void Destroyed() override;
 
 	virtual void DealDamage(float DamageAmount) override;
 
 	virtual void Water(float WaterIncrease) override;
+
+	virtual bool IsWaterable() override;
 
 protected:
 	// Called when the game starts or when spawned
@@ -59,8 +61,10 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	TObjectPtr<UStaticMeshComponent> PumpkinStaticMeshComponent;
-	
 
+	UPROPERTY(BlueprintReadOnly)
+	bool bCanDamage = false;
+	
 	// State of the Pumpkin
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=PumpkinSettings)
 	PumpkinState CurrentPumpkinState = PumpkinState::Growing;	
@@ -78,6 +82,9 @@ public:
 	
 	/* ----- Water Settings ----- */
 	bool bDecayWater = false;
+
+	UPROPERTY(BlueprintReadOnly)
+	bool bCanWater = false;
 
 	// Delay before water decays randomly selected between these 2 numbers
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PumpkinWater)
@@ -129,8 +136,6 @@ public:
 	
 
 private:
-	bool bCanDamage = true;
-	
 	// Timers for all states
 	FTimerHandle StateTimer;
 	
