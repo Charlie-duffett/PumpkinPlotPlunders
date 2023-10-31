@@ -28,7 +28,7 @@ protected:
 	void Register();
 
 public:	
-	virtual void Interact(TObjectPtr<AActor> InteractingActor) override;
+	virtual void Interact(TWeakObjectPtr<AActor> InteractingActor) override;
 	
 	virtual void Activate() override;
 

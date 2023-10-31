@@ -6,6 +6,7 @@
 #include "Engine/StaticMeshActor.h"
 #include "Interfaces/Interact.h"
 #include "Interfaces/Useable.h"
+#include "Interfaces/Waterable.h"
 #include "WateringCanStaticMeshActor.generated.h"
 
 /**
@@ -15,6 +16,7 @@ UCLASS()
 class PUMPKINPLOTPLUNDERS_API AWateringCanStaticMeshActor : public AStaticMeshActor
 	,public IInteract
 	,public IUseable
+	,public IWaterable
 {
 	GENERATED_BODY()
 
@@ -28,9 +30,11 @@ protected:
 	void Register();
 
 public:	
-	virtual void Interact(TObjectPtr<AActor> InteractingActor) override;
+	virtual void Interact(TWeakObjectPtr<AActor> InteractingActor) override;
 	
 	virtual void Activate() override;
+
+	virtual void Water(float WaterIncrease) override;
 
 	UPROPERTY(EditDefaultsOnly)
 	float WaterIncreasePerSecond = 1000.0f;

@@ -23,5 +23,5 @@ class PUMPKINPLOTPLUNDERS_API IInteract
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual void Interact(TObjectPtr<AActor> InteractingActor);
+	virtual void Interact(TWeakObjectPtr<AActor> InteractingActor);
 };

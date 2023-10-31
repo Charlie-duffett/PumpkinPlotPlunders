@@ -101,6 +101,11 @@ public:
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 	TWeakObjectPtr<AActor> GetClosestActor() const { return ClosestActor; }
+
+	bool IsHoldingItem() const { return bIsHoldingItem; }
+
+	TWeakObjectPtr<AActor> GetHeldItem() const { return HeldItem; }
+	
 	
 };
 

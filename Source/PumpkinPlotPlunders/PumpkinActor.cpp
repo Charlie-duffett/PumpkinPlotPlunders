@@ -31,9 +31,9 @@ void APumpkinActor::Tick(float DeltaSeconds)
 	}
 }
 
-void APumpkinActor::Interact(TObjectPtr<AActor> InteractingActor)
+void APumpkinActor::Interact(TWeakObjectPtr<AActor> InteractingActor)
 {
-	UE_LOG(LogTemp, Log, TEXT("Interacting"))
+	// UE_LOG(LogTemp, Log, TEXT("Interacting"))
 	Harvest();
 }
 
@@ -47,26 +47,34 @@ void APumpkinActor::DealDamage(float DamageAmount)
 {
 	if (CurrentPumpkinState == PumpkinState::Evil && bCanDamage)
 	{
-		bCanDamage = true;
 		CurrentHealth -= DamageAmount;
 
 		if (CurrentHealth <= 0)
 		{
 			DisablePumpkin();
 		}
-
-		// GetWorldTimerManager().SetTimer(DamageCooldownTimer, this, &ThisClass::EnableDamage, 3.0f,
-		// false);
 	}
 }
 
 void APumpkinActor::Water(float WaterIncrease)
 {
-	if (CurrentPumpkinState == PumpkinState::Growing)
+	if (CurrentPumpkinState == PumpkinState::Growing && IsWaterable())
 	{
 		// Adding the decay to counter the fact we are also removing the decay each tick
 		CurrentWater += WaterIncrease + (WaterDecayPerSecond * GetWorld()->GetDeltaSeconds());
+
+		CurrentWater = FMath::Min(CurrentWater, MaxWater);
+
+		if (CurrentWater + UE_FLOAT_NORMAL_THRESH >= MaxWater)
+		{
+			DelayWaterDecay();
+		}
 	}
+}
+
+bool APumpkinActor::IsWaterable()
+{
+	return CurrentWater + UE_FLOAT_NORMAL_THRESH < MaxWater && bCanWater;
 }
 
 void APumpkinActor::Register()
@@ -188,6 +196,7 @@ void APumpkinActor::StartGrowingState()
 	// Reset water variables
 	bDecayWater = false;
 	CurrentWater = MaxWater;
+	bCanWater = true;
 	
 	GetWorldTimerManager().SetTimer(StateTimer, this, &ThisClass::EndGrowingState, GrowingTime,
 		false);
@@ -232,6 +241,7 @@ void APumpkinActor::StartEvilState()
 
 void APumpkinActor::EndGrowingState()
 {
+	bCanWater = false;
 	UE_LOG(LogTemp, Display, TEXT("Ended Growing State"))
 	StartHarvestableState();
 }
@@ -244,6 +254,7 @@ void APumpkinActor::EndHarvestableState()
 
 void APumpkinActor::EndEvilState()
 {
+	bCanDamage = false;
 	UE_LOG(LogTemp, Display, TEXT("Game over! Evil state has been ended"))
 	OnPumpkinEvilStateEnd.Broadcast();
 }
