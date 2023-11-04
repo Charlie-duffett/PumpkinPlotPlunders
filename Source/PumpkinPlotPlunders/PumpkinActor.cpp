@@ -3,6 +3,7 @@
 
 #include "PumpkinActor.h"
 #include "PumpkinPlotPlundersCharacter.h"
+#include "Iris/Core/IrisDebugging.h"
 #include "Math/UnrealMathUtility.h"
 
 // Sets default values
@@ -19,6 +20,7 @@ APumpkinActor::APumpkinActor()
 	StateTimer.Invalidate();
 	WaterDelayTimer.Invalidate();
 	DamageCooldownTimer.Invalidate();
+	SpawnDelayTimer.Invalidate();
 }
 
 void APumpkinActor::Tick(float DeltaSeconds)
@@ -51,7 +53,7 @@ void APumpkinActor::DealDamage(float DamageAmount)
 
 		if (CurrentHealth <= 0)
 		{
-			DisablePumpkin();
+			ResetPumpkin();
 		}
 	}
 }
@@ -84,6 +86,7 @@ void APumpkinActor::Register()
 	if (Player.IsValid())
 	{
 		Player->RegisterInteractable(this);
+		IsRegistered = true;
 	}
 }
 
@@ -92,9 +95,10 @@ void APumpkinActor::UnRegister()
 	const TWeakObjectPtr<APumpkinPlotPlundersCharacter> Player = GetPumpkinCharacter();
 
 
-	if (Player.IsValid())
+	if (Player.IsValid() && IsRegistered)
 	{
 		Player->UnRegisterInteractable(this);
+		IsRegistered = false;
 	}
 }
 
@@ -105,7 +109,17 @@ void APumpkinActor::BeginPlay()
 	// Setup pumpkin
 	UpdatePumpkinTransform();
 
-	InitPumpkin();
+	if (PumpkinSpawnDelay > UE_FLOAT_NORMAL_THRESH)
+	{
+		DisablePumpkin();
+	
+		GetWorldTimerManager().SetTimer(SpawnDelayTimer, this, &ThisClass::InitPumpkin, PumpkinSpawnDelay,
+			false);
+	}
+	else
+	{
+		InitPumpkin();
+	}
 }
 
 void APumpkinActor::OnConstruction(const FTransform& Transform)
@@ -282,7 +296,7 @@ void APumpkinActor::Harvest()
 		ClearTimers();
 		OnPumpkinHarvested.Broadcast();
 
-		DisablePumpkin();
+		ResetPumpkin();
 		
 		UE_LOG(LogTemp, Warning, TEXT("Harvested!"))
 	}
@@ -297,18 +311,26 @@ void APumpkinActor::InitPumpkin()
 	PumpkinStaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
 	CurrentHealth = MaxHealth;
+
+	IsDisabled = false;
+}
+
+void APumpkinActor::ResetPumpkin()
+{
+	// Disable pumpkin for a set time before "resetting it"
+	DisablePumpkin();
+	
+	GetWorldTimerManager().SetTimer(StateTimer, this, &ThisClass::InitPumpkin, ResetTime,
+	false);
 }
 
 void APumpkinActor::DisablePumpkin()
 {
-	// Disable pumpkin for a set time before "resetting it"
 	UnRegister();
-		
+
+	IsDisabled = true;
 	PumpkinStaticMeshComponent->SetVisibility(false);
 	PumpkinStaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
-	GetWorldTimerManager().SetTimer(StateTimer, this, &ThisClass::InitPumpkin, ResetTime,
-	false);
 }
 
 void APumpkinActor::EnableDamage()

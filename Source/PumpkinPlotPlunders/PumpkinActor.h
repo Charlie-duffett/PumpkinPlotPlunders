@@ -134,7 +134,13 @@ public:
 	// Update transform of pumpkin (called when team changes)
 	void UpdatePumpkinTransform();
 	
+	UPROPERTY(EditAnywhere, Category=PumpkinTimers)
+	float PumpkinSpawnDelay = 0.0f;
 
+	bool IsRegistered = false;
+
+	UPROPERTY(BlueprintReadOnly)
+	bool IsDisabled = false;
 private:
 	// Timers for all states
 	FTimerHandle StateTimer;
@@ -142,6 +148,8 @@ private:
 	FTimerHandle WaterDelayTimer;
 
 	FTimerHandle DamageCooldownTimer;
+
+	FTimerHandle SpawnDelayTimer;
 	
 	void ClearTimers();
 	
@@ -168,9 +176,11 @@ private:
 	void Harvest();
 
 	void InitPumpkin();
+	
+	void ResetPumpkin();
 
 	void DisablePumpkin();
-
+	
 	void EnableDamage();
 
 	TWeakObjectPtr<APumpkinPlotPlundersCharacter> GetPumpkinCharacter();
