@@ -36,16 +36,16 @@ public:
 
 	virtual void Water(float WaterIncrease) override;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category="Water")
 	float WaterIncreasePerSecond = 1000.0f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PumpkinWater)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Water")
 	float MaxWater = 100.0f;
 
 	UPROPERTY(BlueprintReadOnly)
 	float CurrentWater = 0.0f;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PumpkinWater)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Water")
 	float WaterUsePerSecond = 50.0f;
 private:
 	TWeakObjectPtr<APumpkinPlotPlundersCharacter> PlayerCharacter = nullptr;

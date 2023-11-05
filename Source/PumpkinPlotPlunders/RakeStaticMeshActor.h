@@ -32,7 +32,7 @@ public:
 	
 	virtual void Activate() override;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category="RakeSettings")
 	float DamagePerSecond = 50.0f;
 private:
 	TWeakObjectPtr<APumpkinPlotPlundersCharacter> PlayerCharacter = nullptr;
