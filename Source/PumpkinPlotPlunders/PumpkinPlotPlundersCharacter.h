@@ -7,6 +7,7 @@
 #include "Logging/LogMacros.h"
 #include "PumpkinPlotPlundersCharacter.generated.h"
 
+class UBoxComponent;
 class IInteract;
 class USpringArmComponent;
 class UCameraComponent;
@@ -21,6 +22,9 @@ class APumpkinPlotPlundersCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Collision, meta = (AllowPrivateAccess = "true"))
+	UBoxComponent* InteractionCollisionBox;
+	
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* CameraBoom;
@@ -48,10 +52,7 @@ class APumpkinPlotPlundersCharacter : public ACharacter
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Options|Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
-
-	UPROPERTY(EditAnywhere, Category = "Options|Interaction")
-	float MaxInteractionDistance = 30.0f;
-
+	
 	TArray<TWeakObjectPtr<AActor>> InteractableActors;
 
 	UPROPERTY(BlueprintReadOnly, Category = "ClosestActor", meta = (AllowPrivateAccess = "true"))
@@ -92,7 +93,8 @@ protected:
 	// To add mapping context
 	virtual void BeginPlay();
 
-	void UpdateClosestActor(TWeakObjectPtr<AActor> NewActor, float DistanceToPlayer, float& ClosetActorDist);
+	void UpdateClosestActor(TWeakObjectPtr<AActor> NewActor, float DistanceToPlayer, float& ClosetActorDist,
+		float& ClosestActorDotProduct);
 
 public:
 	/** Returns CameraBoom subobject **/
@@ -105,7 +107,14 @@ public:
 	bool IsHoldingItem() const { return bIsHoldingItem; }
 
 	TWeakObjectPtr<AActor> GetHeldItem() const { return HeldItem; }
-	
-	
+
+	UFUNCTION()
+	void OnBeginInteractionOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnEndInteractionOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
 };
 

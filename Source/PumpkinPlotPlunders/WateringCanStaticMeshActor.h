@@ -9,6 +9,7 @@
 #include "Interfaces/Waterable.h"
 #include "WateringCanStaticMeshActor.generated.h"
 
+class USphereComponent;
 /**
  * 
  */
@@ -20,14 +21,15 @@ class PUMPKINPLOTPLUNDERS_API AWateringCanStaticMeshActor : public AStaticMeshAc
 {
 	GENERATED_BODY()
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Collision, meta = (AllowPrivateAccess = "true"))
+	USphereComponent* InteractionCollisionSphere;
+
 public:
 	AWateringCanStaticMeshActor();
 	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-	void Register();
 
 public:	
 	virtual void Interact(TWeakObjectPtr<AActor> InteractingActor) override;

@@ -8,6 +8,7 @@
 #include "Interfaces/Useable.h"
 #include "RakeStaticMeshActor.generated.h"
 
+class USphereComponent;
 /**
  * 
  */
@@ -18,14 +19,15 @@ class PUMPKINPLOTPLUNDERS_API ARakeStaticMeshActor : public AStaticMeshActor
 {
 	GENERATED_BODY()
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Collision, meta = (AllowPrivateAccess = "true"))
+	USphereComponent* InteractionCollisionSphere;
+	
 public:
 	ARakeStaticMeshActor();
 	
 protected:	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	
-	void Register();
 
 public:	
 	virtual void Interact(TWeakObjectPtr<AActor> InteractingActor) override;

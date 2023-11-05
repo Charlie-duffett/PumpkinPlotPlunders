@@ -79,17 +79,6 @@ bool APumpkinActor::IsWaterable()
 	return CurrentWater + UE_FLOAT_NORMAL_THRESH < MaxWater && bCanWater;
 }
 
-void APumpkinActor::Register()
-{
-	const TWeakObjectPtr<APumpkinPlotPlundersCharacter> Player = GetPumpkinCharacter();
-
-	if (Player.IsValid())
-	{
-		Player->RegisterInteractable(this);
-		IsRegistered = true;
-	}
-}
-
 void APumpkinActor::UnRegister()
 {
 	const TWeakObjectPtr<APumpkinPlotPlundersCharacter> Player = GetPumpkinCharacter();
@@ -304,7 +293,6 @@ void APumpkinActor::Harvest()
 
 void APumpkinActor::InitPumpkin()
 {
-	Register();
 	StartGrowingState();
 	
 	PumpkinStaticMeshComponent->SetVisibility(true);
