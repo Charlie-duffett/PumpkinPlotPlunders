@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Interfaces/Damageable.h"
 #include "Logging/LogMacros.h"
 #include "PumpkinPlotPlundersCharacter.generated.h"
 
@@ -18,7 +19,8 @@ struct FInputActionValue;
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 UCLASS(config=Game)
-class APumpkinPlotPlundersCharacter : public ACharacter
+class APumpkinPlotPlundersCharacter : public ACharacter,
+	public IDamageable
 {
 	GENERATED_BODY()
 
@@ -63,7 +65,15 @@ class APumpkinPlotPlundersCharacter : public ACharacter
 	TWeakObjectPtr<AActor> HeldItem = nullptr;
 
 	FTransform HeldItemTransform;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Options|Health", meta = (AllowPrivateAccess = "true"))
+	float MaxHealth = 100.0f;
 	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Options|Health", meta = (AllowPrivateAccess = "true"))
+	float CurrentHealth = 100.0f;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Options|Health", meta = (AllowPrivateAccess = "true"))
+	bool IsAlive = true;
 public:
 	APumpkinPlotPlundersCharacter();
 	
@@ -97,6 +107,8 @@ protected:
 		float& ClosestActorDotProduct);
 
 public:
+	virtual void DealDamage(float DamageAmount) override;
+
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/

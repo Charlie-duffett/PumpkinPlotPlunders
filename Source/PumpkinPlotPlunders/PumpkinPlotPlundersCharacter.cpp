@@ -250,8 +250,20 @@ void APumpkinPlotPlundersCharacter::UpdateClosestActor(TWeakObjectPtr<AActor> Ne
 	}
 }
 
+void APumpkinPlotPlundersCharacter::DealDamage(float DamageAmount)
+{
+	CurrentHealth -= DamageAmount;
+
+	if (CurrentHealth <= 0.0f)
+	{
+		IsAlive = false;
+		// Trigger on death event
+		this->Destroy();
+	}
+}
+
 void APumpkinPlotPlundersCharacter::OnBeginInteractionOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                                                              UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	RegisterInteractable(OtherActor);
 }
