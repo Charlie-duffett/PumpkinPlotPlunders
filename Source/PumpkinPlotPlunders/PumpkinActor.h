@@ -66,18 +66,18 @@ public:
 	bool bCanDamage = false;
 	
 	// State of the Pumpkin
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=PumpkinSettings)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="PumpkinSettings")
 	PumpkinState CurrentPumpkinState = PumpkinState::Growing;	
 	// Location and rotation of pumpkin when it is on the Enemy Team
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=PumpkinSettings)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="PumpkinSettings|Location")
 	FVector EnemyPumpkinLocation = FVector();
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=PumpkinSettings)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="PumpkinSettings|Location")
 	FRotator EnemyPumpkinRotation = FRotator();
 
 	// Location and rotation of pumpkin when it is on the Allied Team
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=PumpkinSettings)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="PumpkinSettings|Location")
 	FVector AlliedPumpkinLocation = FVector();
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=PumpkinSettings)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="PumpkinSettings|Location")
 	FRotator AlliedPumpkinRotation = FRotator();
 	
 	/* ----- Water Settings ----- */
@@ -87,43 +87,47 @@ public:
 	bool bCanWater = false;
 
 	// Delay before water decays randomly selected between these 2 numbers
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PumpkinWater)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="PumpkinSettings|Water")
 	FVector2f WaterDecayDelay = {0.0f, 3.0f};
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PumpkinWater)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="PumpkinSettings|Water")
 	float MaxWater = 100.0f;
 
 	UPROPERTY(BlueprintReadOnly)
 	float CurrentWater = 0.0f;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PumpkinWater)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="PumpkinSettings|Water")
 	float WaterDecayPerSecond = 1.0f;
 
 	/* ----- Water settings end ----- */
 
 	// Max health of the pumpkin
-	UPROPERTY(BlueprintReadOnly, Category=PumpkinHealth)
+	UPROPERTY(BlueprintReadOnly, Category="PumpkinSettings|Health")
 	float MaxHealth = 100.0f;
 	
 	// How much health the evil pumpkin has
-	UPROPERTY(BlueprintReadOnly, Category=PumpkinHealth)
+	UPROPERTY(BlueprintReadOnly, Category="PumpkinSettings|Health")
 	float CurrentHealth = 100.0f;
 
 	// Time required (in seconds) for the pumpkin to full grow
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PumpkinTimers)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="PumpkinSettings|Timers")
 	float GrowingTime = 15.0f;
 
 	// Time limit (in seconds) for the pumpkin being harvested
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PumpkinTimers)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="PumpkinSettings|Timers")
 	float HarvestTime = 15.0f;
 
 	// Time limit (in seconds) for the pumpkin to be destroyed before causing failure condition
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PumpkinTimers)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="PumpkinSettings|Timers")
 	float EvilTime = 15.0f;
 
 	// Time limit (in seconds) for the pumpkin to be reset after being harvested
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PumpkinTimers)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="PumpkinSettings|Timers")
 	float ResetTime = 5.0f;
+
+	// Time it takes for the pumpkin to initially spawn in
+	UPROPERTY(EditAnywhere, Category="PumpkinSettings|Timers")
+	float PumpkinSpawnDelay = 0.0f;
 
 	// Harvest Delegate instance
 	FHarvestDelegate OnPumpkinHarvested;
@@ -134,9 +138,6 @@ public:
 	// Update transform of pumpkin (called when team changes)
 	void UpdatePumpkinTransform();
 	
-	UPROPERTY(EditAnywhere, Category=PumpkinTimers)
-	float PumpkinSpawnDelay = 0.0f;
-
 	bool IsRegistered = false;
 
 	UPROPERTY(BlueprintReadOnly)

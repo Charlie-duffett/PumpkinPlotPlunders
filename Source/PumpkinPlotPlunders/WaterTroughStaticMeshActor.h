@@ -17,7 +17,7 @@ public:
 	// Sets default values for this actor's properties
 	AWaterTroughStaticMeshActor();
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PumpkinWater)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Water")
 	float WaterAddedPerSecond = 10.0f;
 protected:
 	// Called when the game starts or when spawned
