@@ -10,6 +10,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "Components/BoxComponent.h"
 #include "Interfaces/Interact.h"
 #include "Interfaces/Useable.h"
 
@@ -56,18 +57,31 @@ APumpkinPlotPlundersCharacter::APumpkinPlotPlundersCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+
+	InteractionCollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Interation Collision Box"));
+	InteractionCollisionBox->SetupAttachment(RootComponent);
+
+	Tags.AddUnique(TEXT("PumpkinDamageable"));
 }
 
 void APumpkinPlotPlundersCharacter::RegisterInteractable(AActor* Interactable)
 {
-	InteractableActors.Add(Interactable);
-	UE_LOG(LogTemp, Warning, TEXT("Added Interactable"))
+	const IInteract* InteractableActor = Cast<IInteract>(Interactable);
+	if (InteractableActor != nullptr)
+	{
+		InteractableActors.Add(Interactable);
+		UE_LOG(LogTemp, Warning, TEXT("Added Interactable"))
+	}
 }
 
 void APumpkinPlotPlundersCharacter::UnRegisterInteractable(AActor* Interactable)
 {
-	InteractableActors.Remove(Interactable);
-	UE_LOG(LogTemp, Warning, TEXT("Removed Interactable"))
+	const IInteract* InteractableActor = Cast<IInteract>(Interactable);
+	if (InteractableActor != nullptr)
+	{
+		InteractableActors.Remove(Interactable);
+		UE_LOG(LogTemp, Warning, TEXT("Removed Interactable"))
+	}
 }
 
 void APumpkinPlotPlundersCharacter::Tick(float DeltaSeconds)
@@ -121,6 +135,12 @@ void APumpkinPlotPlundersCharacter::BeginPlay()
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
+	}
+
+	if (InteractionCollisionBox)
+	{
+		InteractionCollisionBox->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnBeginInteractionOverlap);
+		InteractionCollisionBox->OnComponentEndOverlap.AddDynamic(this, &ThisClass::OnEndInteractionOverlap);
 	}
 }
 
@@ -214,13 +234,8 @@ void APumpkinPlotPlundersCharacter::UseItem()
 }
 
 void APumpkinPlotPlundersCharacter::UpdateClosestActor(TWeakObjectPtr<AActor> NewActor, float DistanceToPlayer,
-                                                       float& ClosetActorDist)
+	float& ClosetActorDist, float& ClosestActorDotProduct)
 {
-	if (DistanceToPlayer > MaxInteractionDistance)
-	{
-		return;
-	}
-
 	// We dont want to interact with the item we are holding!
 	if (bIsHoldingItem && NewActor == HeldItem)
 	{
@@ -228,23 +243,54 @@ void APumpkinPlotPlundersCharacter::UpdateClosestActor(TWeakObjectPtr<AActor> Ne
 	}
 	const float DotProduct = this->GetDotProductTo(NewActor.Get());
 	
-	if (DotProduct >= 0.0f)
+	if (DotProduct >= 0.0f && DotProduct > ClosestActorDotProduct)
 	{
 		ClosestActor = NewActor;
 		ClosetActorDist = DistanceToPlayer;
+		ClosestActorDotProduct = DotProduct;
+	}
+}
+
+void APumpkinPlotPlundersCharacter::DealDamage(float DamageAmount)
+{
+	CurrentHealth -= DamageAmount;
+
+	if (CurrentHealth <= 0.0f)
+	{
+		IsAlive = false;
+		// Trigger on death event
+		this->Destroy();
+	}
+}
+
+void APumpkinPlotPlundersCharacter::OnBeginInteractionOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+                                                              UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherComp->ComponentHasTag(TEXT("InteractionCollision")))
+	{
+		RegisterInteractable(OtherActor);
+	}
+}
+
+void APumpkinPlotPlundersCharacter::OnEndInteractionOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (OtherComp->ComponentHasTag(TEXT("InteractionCollision")))
+	{
+		UnRegisterInteractable(OtherActor);
 	}
 }
 
 void APumpkinPlotPlundersCharacter::CheckInteractables()
 {
 	ClosestActor = nullptr;
-	float ClosestActorDist = MaxInteractionDistance + 1.0f;
+	float ClosestActorDotProduct = -1.0f;
+	float ClosestActorDist = FLT_MAX;
 	
 	for (const auto Interactable : InteractableActors)
 	{
 		if (!Interactable.IsValid())
 		{
-			int i = 0;
 			continue;
 		}
 		
@@ -252,7 +298,8 @@ void APumpkinPlotPlundersCharacter::CheckInteractables()
 		
 		if (DistToInteractable < ClosestActorDist)
 		{
-			UpdateClosestActor(Interactable, DistToInteractable, ClosestActorDist);
+
+			UpdateClosestActor(Interactable, DistToInteractable, ClosestActorDist, ClosestActorDotProduct);
 		}
 	}	
 }

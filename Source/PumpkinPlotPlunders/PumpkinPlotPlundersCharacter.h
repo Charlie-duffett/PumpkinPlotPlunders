@@ -4,9 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Interfaces/Damageable.h"
 #include "Logging/LogMacros.h"
 #include "PumpkinPlotPlundersCharacter.generated.h"
 
+class UBoxComponent;
 class IInteract;
 class USpringArmComponent;
 class UCameraComponent;
@@ -17,10 +19,14 @@ struct FInputActionValue;
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 UCLASS(config=Game)
-class APumpkinPlotPlundersCharacter : public ACharacter
+class APumpkinPlotPlundersCharacter : public ACharacter,
+	public IDamageable
 {
 	GENERATED_BODY()
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Collision, meta = (AllowPrivateAccess = "true"))
+	UBoxComponent* InteractionCollisionBox;
+	
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* CameraBoom;
@@ -48,10 +54,7 @@ class APumpkinPlotPlundersCharacter : public ACharacter
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Options|Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
-
-	UPROPERTY(EditAnywhere, Category = "Options|Interaction")
-	float MaxInteractionDistance = 30.0f;
-
+	
 	TArray<TWeakObjectPtr<AActor>> InteractableActors;
 
 	UPROPERTY(BlueprintReadOnly, Category = "ClosestActor", meta = (AllowPrivateAccess = "true"))
@@ -62,7 +65,15 @@ class APumpkinPlotPlundersCharacter : public ACharacter
 	TWeakObjectPtr<AActor> HeldItem = nullptr;
 
 	FTransform HeldItemTransform;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Options|Health", meta = (AllowPrivateAccess = "true"))
+	float MaxHealth = 100.0f;
 	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Options|Health", meta = (AllowPrivateAccess = "true"))
+	float CurrentHealth = 100.0f;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Options|Health", meta = (AllowPrivateAccess = "true"))
+	bool IsAlive = true;
 public:
 	APumpkinPlotPlundersCharacter();
 	
@@ -92,9 +103,12 @@ protected:
 	// To add mapping context
 	virtual void BeginPlay();
 
-	void UpdateClosestActor(TWeakObjectPtr<AActor> NewActor, float DistanceToPlayer, float& ClosetActorDist);
+	void UpdateClosestActor(TWeakObjectPtr<AActor> NewActor, float DistanceToPlayer, float& ClosetActorDist,
+		float& ClosestActorDotProduct);
 
 public:
+	virtual void DealDamage(float DamageAmount) override;
+
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
@@ -105,7 +119,14 @@ public:
 	bool IsHoldingItem() const { return bIsHoldingItem; }
 
 	TWeakObjectPtr<AActor> GetHeldItem() const { return HeldItem; }
-	
-	
+
+	UFUNCTION()
+	void OnBeginInteractionOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnEndInteractionOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
 };
 

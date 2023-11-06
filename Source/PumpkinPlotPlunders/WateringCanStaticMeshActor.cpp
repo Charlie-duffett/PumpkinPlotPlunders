@@ -4,6 +4,7 @@
 #include "WateringCanStaticMeshActor.h"
 
 #include "WaterTroughStaticMeshActor.h"
+#include "Components/SphereComponent.h"
 #include "Interfaces/Waterable.h"
 
 // Sets default values
@@ -12,6 +13,9 @@ AWateringCanStaticMeshActor::AWateringCanStaticMeshActor()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
+	InteractionCollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Interation Collision Sphere"));
+	InteractionCollisionSphere->SetupAttachment(RootComponent);
+	InteractionCollisionSphere->ComponentTags.AddUnique(TEXT("InteractionCollision"));
 }
 
 // Called when the game starts or when spawned
@@ -20,15 +24,6 @@ void AWateringCanStaticMeshActor::BeginPlay()
 	Super::BeginPlay();
 
 	CurrentWater = MaxWater;
-	Register();
-}
-
-void AWateringCanStaticMeshActor::Register()
-{
-	const TObjectPtr<APumpkinPlotPlundersCharacter> Player = Cast<APumpkinPlotPlundersCharacter>(
-		GetWorld()->GetFirstPlayerController()->GetCharacter());
-
-	Player->RegisterInteractable(this);
 }
 
 void AWateringCanStaticMeshActor::Interact(TWeakObjectPtr<AActor> InteractingActor)
