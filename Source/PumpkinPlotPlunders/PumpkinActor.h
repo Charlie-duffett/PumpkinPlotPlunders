@@ -9,6 +9,7 @@
 #include "Interfaces/Waterable.h"
 #include "PumpkinActor.generated.h"
 
+class USphereComponent;
 class UStaticMeshComponent;
 
 UENUM(BlueprintType)
@@ -32,6 +33,13 @@ class PUMPKINPLOTPLUNDERS_API APumpkinActor
 
 private:
 	GENERATED_BODY()
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Collision, meta = (AllowPrivateAccess = "true"))
+	USphereComponent* InteractionCollisionSphere;
+
+	// Anything inside of this that can be damaged by a pumpkin will be!
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Collision, meta = (AllowPrivateAccess = "true"))
+	USphereComponent* DamageRangeSphere;
 
 public:	
 	// Sets default values for this actor's properties
@@ -62,7 +70,7 @@ public:
 	TObjectPtr<UStaticMeshComponent> PumpkinStaticMeshComponent;
 
 	UPROPERTY(BlueprintReadOnly)
-	bool bCanDamage = false;
+	bool bIsDamagable = false;
 	
 	// State of the Pumpkin
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="PumpkinSettings")
@@ -108,6 +116,10 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category="PumpkinSettings|Health")
 	float CurrentHealth = 100.0f;
 
+	// How much damage should the pumpkin do when evil per hit
+	UPROPERTY(BlueprintReadOnly, Category="PumpkinSettings|Damage")
+	float DamagePerHit = 50.0f;
+
 	// Time required (in seconds) for the pumpkin to full grow
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="PumpkinSettings|Timers")
 	float GrowingTime = 15.0f;
@@ -123,6 +135,10 @@ public:
 	// Time limit (in seconds) for the pumpkin to be reset after being harvested
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="PumpkinSettings|Timers")
 	float ResetTime = 5.0f;
+
+	// Time between each pulse of damage when the pumpkin is in an evil state
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="PumpkinSettings|Timers")
+	float TimeBetweenDamage = 2.0f;
 
 	// Time it takes for the pumpkin to initially spawn in
 	UPROPERTY(EditAnywhere, Category="PumpkinSettings|Timers")
@@ -147,7 +163,7 @@ private:
 	
 	FTimerHandle WaterDelayTimer;
 
-	FTimerHandle DamageCooldownTimer;
+	FTimerHandle DamageDelayTimer;
 
 	FTimerHandle SpawnDelayTimer;
 	
@@ -182,6 +198,8 @@ private:
 	void DisablePumpkin();
 	
 	void EnableDamage();
+
+	void AttackLoop();
 
 	TWeakObjectPtr<APumpkinPlotPlundersCharacter> GetPumpkinCharacter();
 };

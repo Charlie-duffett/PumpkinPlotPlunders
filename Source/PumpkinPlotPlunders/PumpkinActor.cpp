@@ -3,6 +3,7 @@
 
 #include "PumpkinActor.h"
 #include "PumpkinPlotPlundersCharacter.h"
+#include "Components/SphereComponent.h"
 #include "Iris/Core/IrisDebugging.h"
 #include "Math/UnrealMathUtility.h"
 
@@ -16,10 +17,17 @@ APumpkinActor::APumpkinActor()
 	RootComponent->SetMobility(EComponentMobility::Movable);
 	PumpkinStaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PumpkinStaticMesh"));
 	PumpkinStaticMeshComponent->SetupAttachment(RootComponent);
+
+	InteractionCollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Interation Collision Sphere"));
+	InteractionCollisionSphere->SetupAttachment(RootComponent);
+	InteractionCollisionSphere->ComponentTags.AddUnique(TEXT("InteractionCollision"));
+
+	DamageRangeSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Damage Range Sphere"));
+	DamageRangeSphere->SetupAttachment(RootComponent);
 	
 	StateTimer.Invalidate();
 	WaterDelayTimer.Invalidate();
-	DamageCooldownTimer.Invalidate();
+	DamageDelayTimer.Invalidate();
 	SpawnDelayTimer.Invalidate();
 }
 
@@ -47,7 +55,7 @@ void APumpkinActor::Destroyed()
 
 void APumpkinActor::DealDamage(float DamageAmount)
 {
-	if (CurrentPumpkinState == PumpkinState::Evil && bCanDamage)
+	if (CurrentPumpkinState == PumpkinState::Evil && bIsDamagable)
 	{
 		CurrentHealth -= DamageAmount;
 
@@ -145,7 +153,8 @@ void APumpkinActor::ClearTimers()
 {
 	GetWorldTimerManager().ClearTimer(StateTimer);
 	GetWorldTimerManager().ClearTimer(WaterDelayTimer);
-	GetWorldTimerManager().ClearTimer(DamageCooldownTimer);
+	GetWorldTimerManager().ClearTimer(DamageDelayTimer);
+	GetWorldTimerManager().ClearTimer(SpawnDelayTimer);
 }
 
 void APumpkinActor::DecayWater(float DeltaSeconds)
@@ -230,14 +239,13 @@ void APumpkinActor::StartEvilState()
 {
 	ClearTimers();
 
-	bCanDamage = true;
+	bIsDamagable = true;
 	
 	CurrentPumpkinState = PumpkinState::Evil;
 	
-	GetWorldTimerManager().SetTimer(StateTimer, this, &ThisClass::EndEvilState, EvilTime,
-		false);
-
 	UpdatePumpkinTransform();
+
+	AttackLoop();
 	
 	UE_LOG(LogTemp, Display, TEXT("Started Evil State"))
 }
@@ -257,7 +265,7 @@ void APumpkinActor::EndHarvestableState()
 
 void APumpkinActor::EndEvilState()
 {
-	bCanDamage = false;
+	bIsDamagable = false;
 	UE_LOG(LogTemp, Display, TEXT("Game over! Evil state has been ended"))
 	OnPumpkinEvilStateEnd.Broadcast();
 }
@@ -316,6 +324,8 @@ void APumpkinActor::DisablePumpkin()
 {
 	UnRegister();
 
+	ClearTimers();
+
 	IsDisabled = true;
 	PumpkinStaticMeshComponent->SetVisibility(false);
 	PumpkinStaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -323,7 +333,31 @@ void APumpkinActor::DisablePumpkin()
 
 void APumpkinActor::EnableDamage()
 {
-	bCanDamage = true;
+	bIsDamagable = true;
+}
+
+void APumpkinActor::AttackLoop()
+{
+	TArray<AActor*> OverlappingActors;
+
+	DamageRangeSphere->GetOverlappingActors(OverlappingActors);
+
+	for (const auto Actor : OverlappingActors)
+	{
+		if (Actor->ActorHasTag("PumpkinDamageable"))
+		{
+			IDamageable* DamagableActor = Cast<IDamageable>(Actor);
+
+			if (DamagableActor != nullptr)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Dealing Damage"));
+				DamagableActor->DealDamage(DamagePerHit);
+			}
+		}
+	}
+
+	GetWorldTimerManager().SetTimer(DamageDelayTimer, this, &ThisClass::AttackLoop, TimeBetweenDamage,
+	false);
 }
 
 TWeakObjectPtr<APumpkinPlotPlundersCharacter> APumpkinActor::GetPumpkinCharacter()

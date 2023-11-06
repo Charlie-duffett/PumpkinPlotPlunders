@@ -10,6 +10,7 @@ ARakeStaticMeshActor::ARakeStaticMeshActor()
 {
 	InteractionCollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Interation Collision Sphere"));
 	InteractionCollisionSphere->SetupAttachment(RootComponent);
+	InteractionCollisionSphere->ComponentTags.AddUnique(TEXT("InteractionCollision"));
 }
 
 // Called when the game starts or when spawned

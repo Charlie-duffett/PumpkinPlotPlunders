@@ -61,6 +61,7 @@ APumpkinPlotPlundersCharacter::APumpkinPlotPlundersCharacter()
 	InteractionCollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Interation Collision Box"));
 	InteractionCollisionBox->SetupAttachment(RootComponent);
 
+	Tags.AddUnique(TEXT("PumpkinDamageable"));
 }
 
 void APumpkinPlotPlundersCharacter::RegisterInteractable(AActor* Interactable)
@@ -265,13 +266,19 @@ void APumpkinPlotPlundersCharacter::DealDamage(float DamageAmount)
 void APumpkinPlotPlundersCharacter::OnBeginInteractionOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
                                                               UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	RegisterInteractable(OtherActor);
+	if (OtherComp->ComponentHasTag(TEXT("InteractionCollision")))
+	{
+		RegisterInteractable(OtherActor);
+	}
 }
 
 void APumpkinPlotPlundersCharacter::OnEndInteractionOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	UnRegisterInteractable(OtherActor);
+	if (OtherComp->ComponentHasTag(TEXT("InteractionCollision")))
+	{
+		UnRegisterInteractable(OtherActor);
+	}
 }
 
 void APumpkinPlotPlundersCharacter::CheckInteractables()
