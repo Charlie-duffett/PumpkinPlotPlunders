@@ -92,10 +92,10 @@ void APumpkinActor::UnRegister()
 	const TWeakObjectPtr<APumpkinPlotPlundersCharacter> Player = GetPumpkinCharacter();
 
 
-	if (Player.IsValid() && IsRegistered)
+	if (Player.IsValid() && bIsRegistered)
 	{
 		Player->UnRegisterInteractable(this);
-		IsRegistered = false;
+		bIsRegistered = false;
 	}
 }
 
@@ -308,7 +308,7 @@ void APumpkinActor::InitPumpkin()
 
 	CurrentHealth = MaxHealth;
 
-	IsDisabled = false;
+	bIsDisabled = false;
 }
 
 void APumpkinActor::ResetPumpkin()
@@ -326,7 +326,7 @@ void APumpkinActor::DisablePumpkin()
 
 	ClearTimers();
 
-	IsDisabled = true;
+	bIsDisabled = true;
 	PumpkinStaticMeshComponent->SetVisibility(false);
 	PumpkinStaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }

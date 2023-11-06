@@ -152,11 +152,13 @@ public:
 	
 	// Update transform of pumpkin (called when team changes)
 	void UpdatePumpkinTransform();
-	
-	bool IsRegistered = false;
 
 	UPROPERTY(BlueprintReadOnly)
-	bool IsDisabled = false;
+	bool bIsRegistered = false;
+
+	UPROPERTY(BlueprintReadOnly)
+	bool bIsDisabled = false;
+	
 private:
 	// Timers for all states
 	FTimerHandle StateTimer;
