@@ -151,10 +151,12 @@ void APumpkinActor::UpdatePumpkinTransform()
 
 void APumpkinActor::ClearTimers()
 {
-	GetWorldTimerManager().ClearTimer(StateTimer);
+	/*GetWorldTimerManager().ClearTimer(StateTimer);
 	GetWorldTimerManager().ClearTimer(WaterDelayTimer);
 	GetWorldTimerManager().ClearTimer(DamageDelayTimer);
-	GetWorldTimerManager().ClearTimer(SpawnDelayTimer);
+	GetWorldTimerManager().ClearTimer(SpawnDelayTimer);*/
+	
+	GetWorldTimerManager().ClearAllTimersForObject(this);
 }
 
 void APumpkinActor::DecayWater(float DeltaSeconds)
