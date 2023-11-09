@@ -71,6 +71,7 @@ void APumpkinPlotPlundersCharacter::RegisterInteractable(AActor* Interactable)
 	{
 		InteractableActors.Add(Interactable);
 		UE_LOG(LogTemp, Warning, TEXT("Added Interactable"))
+		// Interactable->OnDestroyed.AddDynamic(this, &ThisClass::UnRegisterInteractable);
 	}
 }
 
@@ -283,6 +284,7 @@ void APumpkinPlotPlundersCharacter::OnEndInteractionOverlap(UPrimitiveComponent*
 
 void APumpkinPlotPlundersCharacter::CheckInteractables()
 {
+	TWeakObjectPtr<AActor> OldClosestActor = ClosestActor;
 	ClosestActor = nullptr;
 	float ClosestActorDotProduct = -1.0f;
 	float ClosestActorDist = FLT_MAX;
@@ -301,5 +303,21 @@ void APumpkinPlotPlundersCharacter::CheckInteractables()
 
 			UpdateClosestActor(Interactable, DistToInteractable, ClosestActorDist, ClosestActorDotProduct);
 		}
-	}	
+	}
+
+	if (ClosestActor != OldClosestActor)
+	{
+		IInteract* OldInteractClosestActor = Cast<IInteract>(OldClosestActor);
+		IInteract* InteractClosestActor = Cast<IInteract>(ClosestActor);
+
+		if (OldClosestActor.IsValid())
+		{
+			OldInteractClosestActor->Execute_OnDeselected(OldClosestActor.Get());
+		}
+		
+		if (ClosestActor.IsValid())
+		{
+			InteractClosestActor->Execute_OnSelected(ClosestActor.Get());
+		}
+	}
 }

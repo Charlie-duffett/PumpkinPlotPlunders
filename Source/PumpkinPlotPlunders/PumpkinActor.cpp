@@ -92,10 +92,10 @@ void APumpkinActor::UnRegister()
 	const TWeakObjectPtr<APumpkinPlotPlundersCharacter> Player = GetPumpkinCharacter();
 
 
-	if (Player.IsValid() && IsRegistered)
+	if (Player.IsValid() && bIsRegistered)
 	{
 		Player->UnRegisterInteractable(this);
-		IsRegistered = false;
+		bIsRegistered = false;
 	}
 }
 
@@ -151,10 +151,12 @@ void APumpkinActor::UpdatePumpkinTransform()
 
 void APumpkinActor::ClearTimers()
 {
-	GetWorldTimerManager().ClearTimer(StateTimer);
+	/*GetWorldTimerManager().ClearTimer(StateTimer);
 	GetWorldTimerManager().ClearTimer(WaterDelayTimer);
 	GetWorldTimerManager().ClearTimer(DamageDelayTimer);
-	GetWorldTimerManager().ClearTimer(SpawnDelayTimer);
+	GetWorldTimerManager().ClearTimer(SpawnDelayTimer);*/
+	
+	GetWorldTimerManager().ClearAllTimersForObject(this);
 }
 
 void APumpkinActor::DecayWater(float DeltaSeconds)
@@ -267,7 +269,7 @@ void APumpkinActor::EndEvilState()
 {
 	bIsDamagable = false;
 	UE_LOG(LogTemp, Display, TEXT("Game over! Evil state has been ended"))
-	OnPumpkinEvilStateEnd.Broadcast();
+	OnPumpkinEvilStateEnd();
 }
 
 void APumpkinActor::StartWaterDecay()
@@ -291,7 +293,7 @@ void APumpkinActor::Harvest()
 	if (CurrentPumpkinState == PumpkinState::Harvestable)
 	{
 		ClearTimers();
-		OnPumpkinHarvested.Broadcast();
+		OnPumpkinHarvested();
 
 		ResetPumpkin();
 		
@@ -308,7 +310,7 @@ void APumpkinActor::InitPumpkin()
 
 	CurrentHealth = MaxHealth;
 
-	IsDisabled = false;
+	bIsDisabled = false;
 }
 
 void APumpkinActor::ResetPumpkin()
@@ -326,7 +328,7 @@ void APumpkinActor::DisablePumpkin()
 
 	ClearTimers();
 
-	IsDisabled = true;
+	bIsDisabled = true;
 	PumpkinStaticMeshComponent->SetVisibility(false);
 	PumpkinStaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
