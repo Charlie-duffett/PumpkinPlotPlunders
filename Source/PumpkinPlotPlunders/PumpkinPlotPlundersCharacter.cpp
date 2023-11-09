@@ -310,7 +310,14 @@ void APumpkinPlotPlundersCharacter::CheckInteractables()
 		IInteract* OldInteractClosestActor = Cast<IInteract>(OldClosestActor);
 		IInteract* InteractClosestActor = Cast<IInteract>(ClosestActor);
 
-		OldInteractClosestActor->OnDeselected();
-		InteractClosestActor->OnSelected();
+		if (OldClosestActor.IsValid())
+		{
+			OldInteractClosestActor->Execute_OnDeselected(OldClosestActor.Get());
+		}
+		
+		if (ClosestActor.IsValid())
+		{
+			InteractClosestActor->Execute_OnSelected(ClosestActor.Get());
+		}
 	}
 }

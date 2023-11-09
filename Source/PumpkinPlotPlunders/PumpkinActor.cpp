@@ -269,7 +269,7 @@ void APumpkinActor::EndEvilState()
 {
 	bIsDamagable = false;
 	UE_LOG(LogTemp, Display, TEXT("Game over! Evil state has been ended"))
-	OnPumpkinEvilStateEnd.Broadcast();
+	OnPumpkinEvilStateEnd();
 }
 
 void APumpkinActor::StartWaterDecay()
@@ -293,7 +293,7 @@ void APumpkinActor::Harvest()
 	if (CurrentPumpkinState == PumpkinState::Harvestable)
 	{
 		ClearTimers();
-		OnPumpkinHarvested.Broadcast();
+		OnPumpkinHarvested();
 
 		ResetPumpkin();
 		

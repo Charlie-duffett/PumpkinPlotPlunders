@@ -20,9 +20,6 @@ enum class PumpkinState : uint8
 	Evil		UMETA(DisplayName="Evil"),
 };
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FHarvestDelegate);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEvilDelegate);
-
 UCLASS()
 class PUMPKINPLOTPLUNDERS_API APumpkinActor
 	: public AActor
@@ -145,10 +142,12 @@ public:
 	float PumpkinSpawnDelay = 0.0f;
 
 	// Harvest Delegate instance
-	FHarvestDelegate OnPumpkinHarvested;
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnPumpkinHarvested();
 
 	// Evil state end Delegate instance
-	FEvilDelegate OnPumpkinEvilStateEnd;
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnPumpkinEvilStateEnd();
 	
 	// Update transform of pumpkin (called when team changes)
 	void UpdatePumpkinTransform();
