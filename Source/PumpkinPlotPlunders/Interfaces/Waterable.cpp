@@ -7,3 +7,8 @@
 void IWaterable::Water(float WaterIncrease)
 {
 }
+
+bool IWaterable::IsWaterable()
+{
+	return true;
+}

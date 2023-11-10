@@ -3,6 +3,8 @@
 
 #include "PumpkinActor.h"
 #include "PumpkinPlotPlundersCharacter.h"
+#include "Components/SphereComponent.h"
+#include "Iris/Core/IrisDebugging.h"
 #include "Math/UnrealMathUtility.h"
 
 // Sets default values
@@ -15,10 +17,18 @@ APumpkinActor::APumpkinActor()
 	RootComponent->SetMobility(EComponentMobility::Movable);
 	PumpkinStaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PumpkinStaticMesh"));
 	PumpkinStaticMeshComponent->SetupAttachment(RootComponent);
+
+	InteractionCollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Interation Collision Sphere"));
+	InteractionCollisionSphere->SetupAttachment(RootComponent);
+	InteractionCollisionSphere->ComponentTags.AddUnique(TEXT("InteractionCollision"));
+
+	DamageRangeSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Damage Range Sphere"));
+	DamageRangeSphere->SetupAttachment(RootComponent);
 	
 	StateTimer.Invalidate();
 	WaterDelayTimer.Invalidate();
-	DamageCooldownTimer.Invalidate();
+	DamageDelayTimer.Invalidate();
+	SpawnDelayTimer.Invalidate();
 }
 
 void APumpkinActor::Tick(float DeltaSeconds)
@@ -31,9 +41,9 @@ void APumpkinActor::Tick(float DeltaSeconds)
 	}
 }
 
-void APumpkinActor::Interact(TObjectPtr<AActor> InteractingActor)
+void APumpkinActor::Interact(TWeakObjectPtr<AActor> InteractingActor)
 {
-	UE_LOG(LogTemp, Log, TEXT("Interacting"))
+	// UE_LOG(LogTemp, Log, TEXT("Interacting"))
 	Harvest();
 }
 
@@ -45,38 +55,36 @@ void APumpkinActor::Destroyed()
 
 void APumpkinActor::DealDamage(float DamageAmount)
 {
-	if (CurrentPumpkinState == PumpkinState::Evil && bCanDamage)
+	if (CurrentPumpkinState == PumpkinState::Evil && bIsDamagable)
 	{
-		bCanDamage = true;
 		CurrentHealth -= DamageAmount;
 
 		if (CurrentHealth <= 0)
 		{
-			DisablePumpkin();
+			ResetPumpkin();
 		}
-
-		// GetWorldTimerManager().SetTimer(DamageCooldownTimer, this, &ThisClass::EnableDamage, 3.0f,
-		// false);
 	}
 }
 
 void APumpkinActor::Water(float WaterIncrease)
 {
-	if (CurrentPumpkinState == PumpkinState::Growing)
+	if (CurrentPumpkinState == PumpkinState::Growing && IsWaterable())
 	{
 		// Adding the decay to counter the fact we are also removing the decay each tick
 		CurrentWater += WaterIncrease + (WaterDecayPerSecond * GetWorld()->GetDeltaSeconds());
+
+		CurrentWater = FMath::Min(CurrentWater, MaxWater);
+
+		if (CurrentWater + UE_FLOAT_NORMAL_THRESH >= MaxWater)
+		{
+			DelayWaterDecay();
+		}
 	}
 }
 
-void APumpkinActor::Register()
+bool APumpkinActor::IsWaterable()
 {
-	const TWeakObjectPtr<APumpkinPlotPlundersCharacter> Player = GetPumpkinCharacter();
-
-	if (Player.IsValid())
-	{
-		Player->RegisterInteractable(this);
-	}
+	return CurrentWater + UE_FLOAT_NORMAL_THRESH < MaxWater && bCanWater;
 }
 
 void APumpkinActor::UnRegister()
@@ -84,9 +92,10 @@ void APumpkinActor::UnRegister()
 	const TWeakObjectPtr<APumpkinPlotPlundersCharacter> Player = GetPumpkinCharacter();
 
 
-	if (Player.IsValid())
+	if (Player.IsValid() && bIsRegistered)
 	{
 		Player->UnRegisterInteractable(this);
+		bIsRegistered = false;
 	}
 }
 
@@ -97,7 +106,17 @@ void APumpkinActor::BeginPlay()
 	// Setup pumpkin
 	UpdatePumpkinTransform();
 
-	InitPumpkin();
+	if (PumpkinSpawnDelay > UE_FLOAT_NORMAL_THRESH)
+	{
+		DisablePumpkin();
+	
+		GetWorldTimerManager().SetTimer(SpawnDelayTimer, this, &ThisClass::InitPumpkin, PumpkinSpawnDelay,
+			false);
+	}
+	else
+	{
+		InitPumpkin();
+	}
 }
 
 void APumpkinActor::OnConstruction(const FTransform& Transform)
@@ -132,9 +151,12 @@ void APumpkinActor::UpdatePumpkinTransform()
 
 void APumpkinActor::ClearTimers()
 {
-	GetWorldTimerManager().ClearTimer(StateTimer);
+	/*GetWorldTimerManager().ClearTimer(StateTimer);
 	GetWorldTimerManager().ClearTimer(WaterDelayTimer);
-	GetWorldTimerManager().ClearTimer(DamageCooldownTimer);
+	GetWorldTimerManager().ClearTimer(DamageDelayTimer);
+	GetWorldTimerManager().ClearTimer(SpawnDelayTimer);*/
+	
+	GetWorldTimerManager().ClearAllTimersForObject(this);
 }
 
 void APumpkinActor::DecayWater(float DeltaSeconds)
@@ -188,6 +210,7 @@ void APumpkinActor::StartGrowingState()
 	// Reset water variables
 	bDecayWater = false;
 	CurrentWater = MaxWater;
+	bCanWater = true;
 	
 	GetWorldTimerManager().SetTimer(StateTimer, this, &ThisClass::EndGrowingState, GrowingTime,
 		false);
@@ -218,20 +241,20 @@ void APumpkinActor::StartEvilState()
 {
 	ClearTimers();
 
-	bCanDamage = true;
+	bIsDamagable = true;
 	
 	CurrentPumpkinState = PumpkinState::Evil;
 	
-	GetWorldTimerManager().SetTimer(StateTimer, this, &ThisClass::EndEvilState, EvilTime,
-		false);
-
 	UpdatePumpkinTransform();
+
+	AttackLoop();
 	
 	UE_LOG(LogTemp, Display, TEXT("Started Evil State"))
 }
 
 void APumpkinActor::EndGrowingState()
 {
+	bCanWater = false;
 	UE_LOG(LogTemp, Display, TEXT("Ended Growing State"))
 	StartHarvestableState();
 }
@@ -244,8 +267,9 @@ void APumpkinActor::EndHarvestableState()
 
 void APumpkinActor::EndEvilState()
 {
+	bIsDamagable = false;
 	UE_LOG(LogTemp, Display, TEXT("Game over! Evil state has been ended"))
-	OnPumpkinEvilStateEnd.Broadcast();
+	OnPumpkinEvilStateEnd();
 }
 
 void APumpkinActor::StartWaterDecay()
@@ -269,9 +293,9 @@ void APumpkinActor::Harvest()
 	if (CurrentPumpkinState == PumpkinState::Harvestable)
 	{
 		ClearTimers();
-		OnPumpkinHarvested.Broadcast();
+		OnPumpkinHarvested();
 
-		DisablePumpkin();
+		ResetPumpkin();
 		
 		UE_LOG(LogTemp, Warning, TEXT("Harvested!"))
 	}
@@ -279,30 +303,63 @@ void APumpkinActor::Harvest()
 
 void APumpkinActor::InitPumpkin()
 {
-	Register();
 	StartGrowingState();
 	
 	PumpkinStaticMeshComponent->SetVisibility(true);
 	PumpkinStaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
 	CurrentHealth = MaxHealth;
+
+	bIsDisabled = false;
 }
 
-void APumpkinActor::DisablePumpkin()
+void APumpkinActor::ResetPumpkin()
 {
 	// Disable pumpkin for a set time before "resetting it"
-	UnRegister();
-		
-	PumpkinStaticMeshComponent->SetVisibility(false);
-	PumpkinStaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
+	DisablePumpkin();
+	
 	GetWorldTimerManager().SetTimer(StateTimer, this, &ThisClass::InitPumpkin, ResetTime,
 	false);
 }
 
+void APumpkinActor::DisablePumpkin()
+{
+	UnRegister();
+
+	ClearTimers();
+
+	bIsDisabled = true;
+	PumpkinStaticMeshComponent->SetVisibility(false);
+	PumpkinStaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
 void APumpkinActor::EnableDamage()
 {
-	bCanDamage = true;
+	bIsDamagable = true;
+}
+
+void APumpkinActor::AttackLoop()
+{
+	TArray<AActor*> OverlappingActors;
+
+	DamageRangeSphere->GetOverlappingActors(OverlappingActors);
+
+	for (const auto Actor : OverlappingActors)
+	{
+		if (Actor->ActorHasTag("PumpkinDamageable"))
+		{
+			IDamageable* DamagableActor = Cast<IDamageable>(Actor);
+
+			if (DamagableActor != nullptr)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Dealing Damage"));
+				DamagableActor->DealDamage(DamagePerHit);
+			}
+		}
+	}
+
+	GetWorldTimerManager().SetTimer(DamageDelayTimer, this, &ThisClass::AttackLoop, TimeBetweenDamage,
+	false);
 }
 
 TWeakObjectPtr<APumpkinPlotPlundersCharacter> APumpkinActor::GetPumpkinCharacter()

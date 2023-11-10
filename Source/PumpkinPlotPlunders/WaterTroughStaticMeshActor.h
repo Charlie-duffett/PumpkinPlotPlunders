@@ -5,17 +5,13 @@
 #include "CoreMinimal.h"
 #include "Engine/StaticMeshActor.h"
 #include "Interfaces/Interact.h"
-#include "Interfaces/Useable.h"
-#include "RakeStaticMeshActor.generated.h"
+#include "WaterTroughStaticMeshActor.generated.h"
 
 class USphereComponent;
-/**
- * 
- */
+
 UCLASS()
-class PUMPKINPLOTPLUNDERS_API ARakeStaticMeshActor : public AStaticMeshActor
-	,public IInteract
-	,public IUseable
+class PUMPKINPLOTPLUNDERS_API AWaterTroughStaticMeshActor : public AStaticMeshActor,
+	public IInteract
 {
 	GENERATED_BODY()
 
@@ -23,22 +19,15 @@ class PUMPKINPLOTPLUNDERS_API ARakeStaticMeshActor : public AStaticMeshActor
 	USphereComponent* InteractionCollisionSphere;
 	
 public:
-	ARakeStaticMeshActor();
-	
-protected:	
+	// Sets default values for this actor's properties
+	AWaterTroughStaticMeshActor();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Water")
+	float WaterAddedPerSecond = 10.0f;
+protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	virtual void Interact(TWeakObjectPtr<AActor> InteractingActor) override;
-	
-	virtual void Activate() override;
-
-	UPROPERTY(EditDefaultsOnly, Category="RakeSettings")
-	float DamagePerSecond = 50.0f;
-private:
-	TWeakObjectPtr<APumpkinPlotPlundersCharacter> PlayerCharacter = nullptr;
-
-	void ApplyDamage();
-	
 };

@@ -2,30 +2,24 @@
 
 
 #include "RakeStaticMeshActor.h"
+
+#include "Components/SphereComponent.h"
 #include "Interfaces/Damageable.h"
 
 ARakeStaticMeshActor::ARakeStaticMeshActor()
 {
+	InteractionCollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Interation Collision Sphere"));
+	InteractionCollisionSphere->SetupAttachment(RootComponent);
+	InteractionCollisionSphere->ComponentTags.AddUnique(TEXT("InteractionCollision"));
 }
 
 // Called when the game starts or when spawned
 void ARakeStaticMeshActor::BeginPlay()
 {
 	Super::BeginPlay();
-
-	Register();
-	
 }
 
-void ARakeStaticMeshActor::Register()
-{
-	const TObjectPtr<APumpkinPlotPlundersCharacter> Player = Cast<APumpkinPlotPlundersCharacter>(
-		GetWorld()->GetFirstPlayerController()->GetCharacter());
-
-	Player->RegisterInteractable(this);
-}
-
-void ARakeStaticMeshActor::Interact(TObjectPtr<AActor> InteractingActor)
+void ARakeStaticMeshActor::Interact(TWeakObjectPtr<AActor> InteractingActor)
 {
 	using PlayerType = APumpkinPlotPlundersCharacter;
 	TWeakObjectPtr<PlayerType> Player = Cast<PlayerType>(InteractingActor);
