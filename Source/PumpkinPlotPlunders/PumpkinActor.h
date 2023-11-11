@@ -147,6 +147,10 @@ public:
 
 	// Evil state end Delegate instance
 	UFUNCTION(BlueprintImplementableEvent)
+	void OnPumpkinEvilStateStarted();
+	
+	// Evil state end Delegate instance
+	UFUNCTION(BlueprintImplementableEvent)
 	void OnPumpkinEvilStateEnd();
 	
 	// Update transform of pumpkin (called when team changes)
@@ -157,6 +161,9 @@ public:
 
 	UPROPERTY(BlueprintReadOnly)
 	bool bIsDisabled = false;
+
+	UPROPERTY(BlueprintReadOnly)
+	bool bIsEvil = false;
 	
 private:
 	// Timers for all states
