@@ -22,7 +22,7 @@ enum class PumpkinState : uint8
 
 UCLASS()
 class PUMPKINPLOTPLUNDERS_API APumpkinActor
-	: public AActor
+	: public ACharacter
 	, public IInteract
 	, public IDamageable
 	, public IWaterable

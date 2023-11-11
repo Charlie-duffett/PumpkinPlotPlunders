@@ -3,6 +3,7 @@
 
 #include "PumpkinActor.h"
 #include "PumpkinPlotPlundersCharacter.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
 #include "Iris/Core/IrisDebugging.h"
 #include "Math/UnrealMathUtility.h"
@@ -13,7 +14,7 @@ APumpkinActor::APumpkinActor()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;	
  	
-	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("SceneRoot"));
+	//RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("SceneRoot"));
 	RootComponent->SetMobility(EComponentMobility::Movable);
 	PumpkinStaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PumpkinStaticMesh"));
 	PumpkinStaticMeshComponent->SetupAttachment(RootComponent);
@@ -307,6 +308,7 @@ void APumpkinActor::InitPumpkin()
 	
 	PumpkinStaticMeshComponent->SetVisibility(true);
 	PumpkinStaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
 	CurrentHealth = MaxHealth;
 
@@ -331,6 +333,7 @@ void APumpkinActor::DisablePumpkin()
 	bIsDisabled = true;
 	PumpkinStaticMeshComponent->SetVisibility(false);
 	PumpkinStaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void APumpkinActor::EnableDamage()
@@ -370,13 +373,13 @@ TWeakObjectPtr<APumpkinPlotPlundersCharacter> APumpkinActor::GetPumpkinCharacter
 		return nullptr;
 	}
 	
-	const TWeakObjectPtr<APlayerController> Controller = World->GetFirstPlayerController();
-	if (!Controller.IsValid())
+	const TWeakObjectPtr<APlayerController> PlayerController = World->GetFirstPlayerController();
+	if (!PlayerController.IsValid())
 	{
 		return nullptr;
 	}
 	
-	const TWeakObjectPtr<ACharacter> Character = Controller->GetCharacter();
+	const TWeakObjectPtr<ACharacter> Character = PlayerController->GetCharacter();
 	if (!Character.IsValid())
 	{
 		return nullptr;
