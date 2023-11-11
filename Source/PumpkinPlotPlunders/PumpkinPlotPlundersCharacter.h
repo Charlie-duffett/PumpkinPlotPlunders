@@ -62,6 +62,7 @@ class APumpkinPlotPlundersCharacter : public ACharacter,
 
 	bool bIsHoldingItem = false;
 
+	UPROPERTY(BlueprintReadOnly, Category = "HeldItem", meta = (AllowPrivateAccess = "true"))
 	TWeakObjectPtr<AActor> HeldItem = nullptr;
 
 	FTransform HeldItemTransform;
@@ -128,5 +129,10 @@ public:
 	void OnEndInteractionOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnPickUpItem();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnDropItem();	
 };
 
