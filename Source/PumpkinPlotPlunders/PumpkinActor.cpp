@@ -242,9 +242,13 @@ void APumpkinActor::StartEvilState()
 {
 	ClearTimers();
 
+	bIsEvil = true;
+	
 	bIsDamagable = true;
 	
 	CurrentPumpkinState = PumpkinState::Evil;
+
+	OnPumpkinEvilStateStarted();
 	
 	UpdatePumpkinTransform();
 
@@ -329,6 +333,12 @@ void APumpkinActor::DisablePumpkin()
 	UnRegister();
 
 	ClearTimers();
+
+	if (bIsEvil)
+	{
+		bIsEvil = false;
+		OnPumpkinEvilStateEnd();
+	}
 
 	bIsDisabled = true;
 	PumpkinStaticMeshComponent->SetVisibility(false);
