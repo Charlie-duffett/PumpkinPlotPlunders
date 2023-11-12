@@ -3,9 +3,9 @@
 
 #include "PumpkinActor.h"
 #include "PumpkinPlotPlundersCharacter.h"
+#include "PumpkinPlotPlundersGameMode.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
-#include "Iris/Core/IrisDebugging.h"
 #include "Math/UnrealMathUtility.h"
 
 // Sets default values
@@ -62,6 +62,10 @@ void APumpkinActor::DealDamage(float DamageAmount)
 
 		if (CurrentHealth <= 0)
 		{
+			if (IsValid(GameMode))
+			{
+				GameMode->AddPoints(PointsForKilling);
+			}
 			ResetPumpkin();
 		}
 	}
@@ -107,6 +111,10 @@ void APumpkinActor::BeginPlay()
 	// Setup pumpkin
 	UpdatePumpkinTransform();
 
+	GameMode = Cast<APumpkinPlotPlundersGameMode>(GetWorld()->GetAuthGameMode());
+
+	StartingTransform = GetActorTransform();
+	
 	if (PumpkinSpawnDelay > UE_FLOAT_NORMAL_THRESH)
 	{
 		DisablePumpkin();
@@ -234,6 +242,11 @@ void APumpkinActor::StartHarvestableState()
 		false);
 
 	UpdatePumpkinTransform();
+
+	if (IsValid(GameMode))
+	{
+		GameMode->AddPoints(PointsForBeingHarvestable);
+	}
 	
 	UE_LOG(LogTemp, Display, TEXT("Started Harvestable State"))
 }
@@ -298,6 +311,12 @@ void APumpkinActor::Harvest()
 	if (CurrentPumpkinState == PumpkinState::Harvestable)
 	{
 		ClearTimers();
+
+		if (IsValid(GameMode))
+		{
+			GameMode->AddPoints(PointsForHarvesting);
+		}
+		
 		OnPumpkinHarvested();
 
 		ResetPumpkin();
@@ -309,6 +328,8 @@ void APumpkinActor::Harvest()
 void APumpkinActor::InitPumpkin()
 {
 	StartGrowingState();
+
+	SetActorTransform(StartingTransform);
 	
 	PumpkinStaticMeshComponent->SetVisibility(true);
 	PumpkinStaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
