@@ -10,9 +10,11 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "Blueprint/UserWidget.h"
 #include "Components/BoxComponent.h"
 #include "Interfaces/Interact.h"
 #include "Interfaces/Useable.h"
+#include "Widgets/OverlayWidget.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -144,6 +146,16 @@ void APumpkinPlotPlundersCharacter::BeginPlay()
 	{
 		InteractionCollisionBox->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnBeginInteractionOverlap);
 		InteractionCollisionBox->OnComponentEndOverlap.AddDynamic(this, &ThisClass::OnEndInteractionOverlap);
+	}
+
+	if (OverlayWidgetClass)
+	{
+		OverlayWidgetInstance = CreateWidget<UOverlayWidget>(GetWorld(), OverlayWidgetClass);
+
+		if (IsValid(OverlayWidgetInstance))
+		{
+			OverlayWidgetInstance->AddToViewport();
+		}
 	}
 }
 
