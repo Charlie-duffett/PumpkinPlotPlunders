@@ -25,11 +25,14 @@ void APumpkinPlotPlundersGameMode::AddOneSecondToTime()
 		Seconds = 0;
 		++Minutes;
 	}
+	OnTimeUpdated.ExecuteIfBound(Seconds, Minutes);
 }
 
 void APumpkinPlotPlundersGameMode::AddPoints(int AmountToAdd)
 {
 	Points += AmountToAdd;
+
+	OnPointsUpdated.ExecuteIfBound(Points);
 }
 
 void APumpkinPlotPlundersGameMode::BeginPlay()
