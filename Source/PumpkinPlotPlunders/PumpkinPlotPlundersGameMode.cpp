@@ -20,7 +20,7 @@ void APumpkinPlotPlundersGameMode::AddOneSecondToTime()
 {
 	++Seconds;
 
-	if (Seconds == 60)
+	if (Seconds >= 60)
 	{
 		Seconds = 0;
 		++Minutes;
