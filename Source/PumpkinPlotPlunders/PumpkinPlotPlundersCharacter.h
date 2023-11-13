@@ -8,6 +8,7 @@
 #include "Logging/LogMacros.h"
 #include "PumpkinPlotPlundersCharacter.generated.h"
 
+class UOverlayWidget;
 class UBoxComponent;
 class IInteract;
 class USpringArmComponent;
@@ -75,6 +76,12 @@ class APumpkinPlotPlundersCharacter : public ACharacter,
 
 	UPROPERTY(BlueprintReadOnly, Category = "Options|Health", meta = (AllowPrivateAccess = "true"))
 	bool IsAlive = true;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Options|Widgets", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UOverlayWidget> OverlayWidgetClass;
+
+	TObjectPtr<UOverlayWidget> OverlayWidgetInstance = nullptr;
+
 public:
 	APumpkinPlotPlundersCharacter();
 	

@@ -9,6 +9,7 @@
 #include "Interfaces/Waterable.h"
 #include "PumpkinActor.generated.h"
 
+class APumpkinPlotPlundersGameMode;
 class USphereComponent;
 class UStaticMeshComponent;
 
@@ -164,7 +165,18 @@ public:
 
 	UPROPERTY(BlueprintReadOnly)
 	bool bIsEvil = false;
-	
+
+	// How many points should be given when the player harvests this pumpkin
+	UPROPERTY(EditDefaultsOnly, Category="PumpkinSettings|Points")
+	int PointsForHarvesting = 0;
+
+	// How many points should be given when the player kills this pumpkin
+	UPROPERTY(EditDefaultsOnly, Category="PumpkinSettings|Points")
+	int PointsForKilling = 0;
+
+	// How many points should be given when the pumpkin becomes harvestable
+	UPROPERTY(EditDefaultsOnly, Category="PumpkinSettings|Points")
+	int PointsForBeingHarvestable = 0;
 private:
 	// Timers for all states
 	FTimerHandle StateTimer;
@@ -174,6 +186,10 @@ private:
 	FTimerHandle DamageDelayTimer;
 
 	FTimerHandle SpawnDelayTimer;
+
+	TObjectPtr<APumpkinPlotPlundersGameMode> GameMode = nullptr;
+
+	FTransform StartingTransform;
 	
 	void ClearTimers();
 	
