@@ -12,4 +12,33 @@ APumpkinPlotPlundersGameMode::APumpkinPlotPlundersGameMode()
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
+
+	SecondTimer.Invalidate();
+}
+
+void APumpkinPlotPlundersGameMode::AddOneSecondToTime()
+{
+	++Seconds;
+
+	if (Seconds >= 60)
+	{
+		Seconds = 0;
+		++Minutes;
+	}
+	OnTimeUpdated.ExecuteIfBound(Seconds, Minutes);
+}
+
+void APumpkinPlotPlundersGameMode::AddPoints(int AmountToAdd)
+{
+	Points += AmountToAdd;
+
+	OnPointsUpdated.ExecuteIfBound(Points);
+}
+
+void APumpkinPlotPlundersGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+
+	GetWorldTimerManager().SetTimer(SecondTimer, this, &ThisClass::AddOneSecondToTime, 1.0f,
+			true);
 }

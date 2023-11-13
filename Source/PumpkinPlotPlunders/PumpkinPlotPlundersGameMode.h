@@ -6,6 +6,9 @@
 #include "GameFramework/GameModeBase.h"
 #include "PumpkinPlotPlundersGameMode.generated.h"
 
+DECLARE_DELEGATE_TwoParams(FTimeUpdatedDelegate, int, int);
+DECLARE_DELEGATE_OneParam(FPointsUpdatedDelegate, int);
+
 UCLASS(minimalapi)
 class APumpkinPlotPlundersGameMode : public AGameModeBase
 {
@@ -13,6 +16,25 @@ class APumpkinPlotPlundersGameMode : public AGameModeBase
 
 public:
 	APumpkinPlotPlundersGameMode();
+
+	void AddOneSecondToTime();
+
+	void AddPoints(int AmountToAdd);
+	
+	int Points = 0;
+
+	int Seconds = 0;
+
+	int Minutes = 0;
+
+	FTimeUpdatedDelegate OnTimeUpdated;
+
+	FPointsUpdatedDelegate OnPointsUpdated;
+protected:
+	virtual void BeginPlay() override;
+
+private:
+	FTimerHandle SecondTimer;
 };
 
 
