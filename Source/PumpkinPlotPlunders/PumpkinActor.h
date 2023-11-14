@@ -142,6 +142,10 @@ public:
 	UPROPERTY(EditAnywhere, Category="PumpkinSettings|Timers")
 	float PumpkinSpawnDelay = 0.0f;
 
+	// Harvest state started Delegate instance
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnPumpkinHarvestStateStarted();
+	
 	// Harvest Delegate instance
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnPumpkinHarvested();
