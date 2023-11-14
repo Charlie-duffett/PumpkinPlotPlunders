@@ -145,6 +145,10 @@ public:
 	// Harvest state started Delegate instance
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnPumpkinHarvestStateStarted();
+
+	// Harvest state started Delegate instance
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnPumpkinGrowingStateStarted();
 	
 	// Harvest Delegate instance
 	UFUNCTION(BlueprintImplementableEvent)
