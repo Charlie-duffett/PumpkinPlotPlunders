@@ -55,6 +55,6 @@ void UOverlayWidget::UpdatePoints(int NewPoints)
 	{
 		const FString PointString = FString::Printf(TEXT("%d"), NewPoints);
 
-		SurvivalTime->SetText(FText::FromString(PointString));
+		Points->SetText(FText::FromString(PointString));
 	}
 }

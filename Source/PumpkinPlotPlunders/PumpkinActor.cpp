@@ -243,6 +243,8 @@ void APumpkinActor::StartHarvestableState()
 
 	UpdatePumpkinTransform();
 
+	OnPumpkinHarvestStateStarted();
+
 	if (IsValid(GameMode))
 	{
 		GameMode->AddPoints(PointsForBeingHarvestable);
