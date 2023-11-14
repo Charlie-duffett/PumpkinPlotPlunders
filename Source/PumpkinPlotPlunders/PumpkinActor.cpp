@@ -230,6 +230,8 @@ void APumpkinActor::StartGrowingState()
 		false);
 
 	UpdatePumpkinTransform();
+
+	OnPumpkinGrowingStateStarted();
 	
 	UE_LOG(LogTemp, Display, TEXT("Started Growing State"))
 }
