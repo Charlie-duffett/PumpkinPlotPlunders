@@ -20,11 +20,14 @@ public:
 	void AddOneSecondToTime();
 
 	void AddPoints(int AmountToAdd);
-	
+
+	UPROPERTY(BlueprintReadOnly)
 	int Points = 0;
 
+	UPROPERTY(BlueprintReadOnly)
 	int Seconds = 0;
 
+	UPROPERTY(BlueprintReadOnly)
 	int Minutes = 0;
 
 	FTimeUpdatedDelegate OnTimeUpdated;
