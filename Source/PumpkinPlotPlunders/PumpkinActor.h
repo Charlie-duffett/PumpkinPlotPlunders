@@ -164,10 +164,7 @@ public:
 	
 	// Update transform of pumpkin (called when team changes)
 	void UpdatePumpkinTransform();
-
-	UPROPERTY(BlueprintReadOnly)
-	bool bIsRegistered = false;
-
+	
 	UPROPERTY(BlueprintReadOnly)
 	bool bIsDisabled = false;
 
