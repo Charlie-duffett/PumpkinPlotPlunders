@@ -30,4 +30,6 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnDeselected();
+
+	virtual bool IsAlive();
 };

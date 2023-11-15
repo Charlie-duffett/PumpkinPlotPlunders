@@ -115,7 +115,7 @@ public:
 	float CurrentHealth = 100.0f;
 
 	// How much damage should the pumpkin do when evil per hit
-	UPROPERTY(BlueprintReadOnly, Category="PumpkinSettings|Damage")
+	UPROPERTY(EditDefaultsOnly, Category="PumpkinSettings|Damage")
 	float DamagePerHit = 50.0f;
 
 	// Time required (in seconds) for the pumpkin to full grow
@@ -164,10 +164,7 @@ public:
 	
 	// Update transform of pumpkin (called when team changes)
 	void UpdatePumpkinTransform();
-
-	UPROPERTY(BlueprintReadOnly)
-	bool bIsRegistered = false;
-
+	
 	UPROPERTY(BlueprintReadOnly)
 	bool bIsDisabled = false;
 
