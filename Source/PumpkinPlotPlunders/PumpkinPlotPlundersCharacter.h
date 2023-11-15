@@ -80,6 +80,7 @@ class APumpkinPlotPlundersCharacter : public ACharacter,
 	UPROPERTY(EditDefaultsOnly, Category = "Options|Widgets", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UOverlayWidget> OverlayWidgetClass;
 
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UOverlayWidget> OverlayWidgetInstance = nullptr;
 
 public:
