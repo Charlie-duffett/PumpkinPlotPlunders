@@ -7,8 +7,3 @@
 void IInteract::Interact(TWeakObjectPtr<AActor> InteractingActor)
 {
 }
-
-bool IInteract::IsAlive()
-{
-	return true;
-}

@@ -118,9 +118,9 @@ bool APumpkinPlotPlundersCharacter::HoldItem(TWeakObjectPtr<AActor> Item, bool I
 
 	if (bHeldSuccessfully)
 	{
+		OnPickUpItem();
 		bIsHoldingItem = true;
 		HeldItem = Item;
-		OnPickUpItem();
 		UE_LOG(LogTemp, Warning, TEXT("Holding item!"))
 		return true;
 	}
