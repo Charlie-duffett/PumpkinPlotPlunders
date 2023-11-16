@@ -97,7 +97,7 @@ void APumpkinActor::UnRegister()
 	const TWeakObjectPtr<APumpkinPlotPlundersCharacter> Player = GetPumpkinCharacter();
 
 
-	if (Player.IsValid() && bIsRegistered)
+	if (Player.IsValid())
 	{
 		Player->UnRegisterInteractable(this);
 		bIsRegistered = false;
