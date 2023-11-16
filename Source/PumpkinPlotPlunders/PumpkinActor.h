@@ -187,6 +187,7 @@ public:
 	int PointsForBeingHarvestable = 0;
 private:
 	// Timers for all states
+	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
 	FTimerHandle StateTimer;
 	
 	FTimerHandle WaterDelayTimer;
