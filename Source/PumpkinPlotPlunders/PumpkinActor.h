@@ -115,7 +115,7 @@ public:
 	float CurrentHealth = 100.0f;
 
 	// How much damage should the pumpkin do when evil per hit
-	UPROPERTY(BlueprintReadOnly, Category="PumpkinSettings|Damage")
+	UPROPERTY(EditDefaultsOnly, Category="PumpkinSettings|Damage")
 	float DamagePerHit = 50.0f;
 
 	// Time required (in seconds) for the pumpkin to full grow
@@ -187,6 +187,7 @@ public:
 	int PointsForBeingHarvestable = 0;
 private:
 	// Timers for all states
+	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
 	FTimerHandle StateTimer;
 	
 	FTimerHandle WaterDelayTimer;

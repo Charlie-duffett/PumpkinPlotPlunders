@@ -278,8 +278,13 @@ void APumpkinPlotPlundersCharacter::DealDamage(float DamageAmount)
 	}
 }
 
-void APumpkinPlotPlundersCharacter::OnBeginInteractionOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-                                                              UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+	UPrimitiveComponent* APumpkinPlotPlundersCharacter::GetHitboxComponent()
+	{
+		return GetCapsuleComponent();
+	}
+
+	void APumpkinPlotPlundersCharacter::OnBeginInteractionOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	                                                              UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (OtherComp->ComponentHasTag(TEXT("InteractionCollision")))
 	{

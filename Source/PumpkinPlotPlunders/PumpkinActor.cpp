@@ -97,7 +97,7 @@ void APumpkinActor::UnRegister()
 	const TWeakObjectPtr<APumpkinPlotPlundersCharacter> Player = GetPumpkinCharacter();
 
 
-	if (Player.IsValid() && bIsRegistered)
+	if (Player.IsValid())
 	{
 		Player->UnRegisterInteractable(this);
 		bIsRegistered = false;
@@ -381,14 +381,15 @@ void APumpkinActor::AttackLoop()
 	TArray<AActor*> OverlappingActors;
 
 	DamageRangeSphere->GetOverlappingActors(OverlappingActors);
-
+	
 	for (const auto Actor : OverlappingActors)
 	{
 		if (Actor->ActorHasTag("PumpkinDamageable"))
 		{
 			IDamageable* DamagableActor = Cast<IDamageable>(Actor);
-
-			if (DamagableActor != nullptr)
+			
+			if (DamagableActor != nullptr &&
+				DamageRangeSphere->IsOverlappingComponent(DamagableActor->GetHitboxComponent()))
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Dealing Damage"));
 				DamagableActor->DealDamage(DamagePerHit);
