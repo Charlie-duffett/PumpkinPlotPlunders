@@ -7,3 +7,8 @@
 void IDamageable::DealDamage(float DamageAmount)
 {
 }
+
+UPrimitiveComponent* IDamageable::GetHitboxComponent()
+{
+	return nullptr;
+}

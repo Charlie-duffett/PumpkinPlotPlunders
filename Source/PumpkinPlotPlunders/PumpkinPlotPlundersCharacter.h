@@ -92,7 +92,7 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 
 	bool HoldItem(TWeakObjectPtr<AActor> Item, bool IsRake);
-
+	
 protected:
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
@@ -117,6 +117,8 @@ protected:
 
 public:
 	virtual void DealDamage(float DamageAmount) override;
+
+	virtual UPrimitiveComponent* GetHitboxComponent() override;
 
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
