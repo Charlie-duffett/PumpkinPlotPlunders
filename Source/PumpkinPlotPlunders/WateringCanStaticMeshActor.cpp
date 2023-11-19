@@ -34,7 +34,7 @@ void AWateringCanStaticMeshActor::Interact(TWeakObjectPtr<AActor> InteractingAct
 	if (Player.IsValid())
 	{
 		// Attach to player etc
-		Player->HoldItem(this, true);
+		Player->HoldItem(this, false);
 		PlayerCharacter = Player;
 	}
 }

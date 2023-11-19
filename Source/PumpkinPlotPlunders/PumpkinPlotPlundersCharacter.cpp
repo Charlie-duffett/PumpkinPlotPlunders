@@ -106,15 +106,20 @@ bool APumpkinPlotPlundersCharacter::HoldItem(TWeakObjectPtr<AActor> Item, bool I
 	HeldItemTransform = Item->GetActorTransform();
 	
 	bool bHeldSuccessfully = false;
+	FTransform SocketTransform;
 	if (IsRake)
 	{
-		bHeldSuccessfully = Item->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, "HoldRake");
+		SocketTransform = GetMesh()->GetSocketTransform("HoldRake", ERelativeTransformSpace::RTS_Component);
+		bHeldSuccessfully = Item->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, "HoldRake");
 	}
 	else
 	{
-		bHeldSuccessfully = Item->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, "HoldWateringCan");
+		SocketTransform = GetMesh()->GetSocketTransform("HoldWateringCan", ERelativeTransformSpace::RTS_Component);
+		bHeldSuccessfully = Item->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, "HoldWateringCan");
 	}
-	
+
+	Item->SetActorRelativeLocation(SocketTransform.GetLocation());
+	Item->SetActorRelativeRotation(SocketTransform.GetRotation());
 
 	if (bHeldSuccessfully)
 	{
@@ -127,7 +132,7 @@ bool APumpkinPlotPlundersCharacter::HoldItem(TWeakObjectPtr<AActor> Item, bool I
 	return false;
 }
 
-void APumpkinPlotPlundersCharacter::PlayAttackAnimation() const
+void APumpkinPlotPlundersCharacter::PlayAttackAnimation()
 {
 	if (IsValid(AttackAnimation) && AnimationInstance.IsValid())
 	{
@@ -317,7 +322,7 @@ void APumpkinPlotPlundersCharacter::OnEndInteractionOverlap(UPrimitiveComponent*
 	}
 }
 
-void APumpkinPlotPlundersCharacter::CheckInteractables()
+	void APumpkinPlotPlundersCharacter::CheckInteractables()
 {
 	TWeakObjectPtr<AActor> OldClosestActor = ClosestActor;
 	ClosestActor = nullptr;

@@ -16,8 +16,8 @@ APumpkinActor::APumpkinActor()
  	
 	//RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("SceneRoot"));
 	RootComponent->SetMobility(EComponentMobility::Movable);
-	PumpkinStaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PumpkinStaticMesh"));
-	PumpkinStaticMeshComponent->SetupAttachment(RootComponent);
+	// GetMesh() = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PumpkinStaticMesh"));
+	// GetMesh()->SetupAttachment(RootComponent);
 
 	InteractionCollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Interation Collision Sphere"));
 	InteractionCollisionSphere->SetupAttachment(RootComponent);
@@ -132,29 +132,29 @@ void APumpkinActor::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
 
-	if (PumpkinStaticMeshComponent && RootComponent)
+	if (GetMesh() && RootComponent)
 	{
-		PumpkinStaticMeshComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
+		GetMesh()->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
 	}
 	UpdatePumpkinTransform();
 }
 
 void APumpkinActor::UpdatePumpkinTransform()
 {
-	if (!IsValid(PumpkinStaticMeshComponent))
+	if (GetMesh() == nullptr)
 	{
 		return;
 	}
 	
 	if (CurrentPumpkinState == PumpkinState::Evil)
 	{
-		PumpkinStaticMeshComponent->SetRelativeLocation(EnemyPumpkinLocation);
-		PumpkinStaticMeshComponent->SetRelativeRotation(EnemyPumpkinRotation);
+		GetMesh()->SetRelativeLocation(EnemyPumpkinLocation);
+		GetMesh()->SetRelativeRotation(EnemyPumpkinRotation);
 	}
 	else
 	{
-		PumpkinStaticMeshComponent->SetRelativeLocation(AlliedPumpkinLocation);
-		PumpkinStaticMeshComponent->SetRelativeRotation(AlliedPumpkinRotation);
+		GetMesh()->SetRelativeLocation(AlliedPumpkinLocation);
+		GetMesh()->SetRelativeRotation(AlliedPumpkinRotation);
 	}
 }
 
@@ -335,8 +335,8 @@ void APumpkinActor::InitPumpkin()
 
 	SetActorTransform(StartingTransform);
 	
-	PumpkinStaticMeshComponent->SetVisibility(true);
-	PumpkinStaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	GetMesh()->SetVisibility(true);
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
 	CurrentHealth = MaxHealth;
@@ -366,8 +366,8 @@ void APumpkinActor::DisablePumpkin()
 	}
 
 	bIsDisabled = true;
-	PumpkinStaticMeshComponent->SetVisibility(false);
-	PumpkinStaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetMesh()->SetVisibility(false);
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 

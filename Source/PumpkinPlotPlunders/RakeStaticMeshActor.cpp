@@ -27,7 +27,7 @@ void ARakeStaticMeshActor::Interact(TWeakObjectPtr<AActor> InteractingActor)
 	if (Player.IsValid())
 	{
 		// Attach to player etc
-		Player->HoldItem(this, false);
+		Player->HoldItem(this, true);
 		PlayerCharacter = Player;
 	}
 }

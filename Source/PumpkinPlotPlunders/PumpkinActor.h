@@ -64,8 +64,8 @@ protected:
 public:
 	virtual void OnConstruction(const FTransform& Transform) override;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	TObjectPtr<UStaticMeshComponent> PumpkinStaticMeshComponent;
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	//TObjectPtr<UStaticMeshComponent> PumpkinStaticMeshComponent;
 
 	UPROPERTY(BlueprintReadOnly)
 	bool bIsDamagable = false;

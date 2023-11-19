@@ -88,6 +88,9 @@ class APumpkinPlotPlundersCharacter : public ACharacter,
 	TObjectPtr<UAnimMontage> AttackAnimation = nullptr;
 
 	TWeakObjectPtr<UAnimInstance> AnimationInstance = nullptr;
+
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	bool bIsAttacking = false;
 	
 public:
 	APumpkinPlotPlundersCharacter();
@@ -99,8 +102,8 @@ public:
 
 	bool HoldItem(TWeakObjectPtr<AActor> Item, bool IsRake);
 
-	void PlayAttackAnimation() const;
-	
+	void PlayAttackAnimation();
+
 protected:
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
@@ -151,6 +154,8 @@ public:
 	void OnPickUpItem();
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void OnDropItem();	
+	void OnDropItem();
+
+	void OnAnimationEnd();
 };
 
