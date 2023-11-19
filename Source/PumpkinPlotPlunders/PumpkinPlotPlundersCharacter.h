@@ -104,6 +104,9 @@ public:
 
 	void PlayAttackAnimation();
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayAttackSound();
+
 protected:
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);

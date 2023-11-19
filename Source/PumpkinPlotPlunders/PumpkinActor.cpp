@@ -369,6 +369,8 @@ void APumpkinActor::DisablePumpkin()
 	GetMesh()->SetVisibility(false);
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	BPDisablePumpkin();
 }
 
 void APumpkinActor::EnableDamage()

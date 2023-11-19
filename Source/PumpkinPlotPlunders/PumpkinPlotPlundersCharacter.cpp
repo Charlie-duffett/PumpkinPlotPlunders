@@ -139,6 +139,7 @@ void APumpkinPlotPlundersCharacter::PlayAttackAnimation()
 		if (!AnimationInstance->Montage_IsPlaying(AttackAnimation) && HeldItem.IsValid())
 		{
 			AnimationInstance->Montage_Play(AttackAnimation);
+			PlayAttackSound();
 		}
 	}
 }
