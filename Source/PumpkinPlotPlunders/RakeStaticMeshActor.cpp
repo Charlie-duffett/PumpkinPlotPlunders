@@ -34,7 +34,11 @@ void ARakeStaticMeshActor::Interact(TWeakObjectPtr<AActor> InteractingActor)
 
 void ARakeStaticMeshActor::Activate()
 {
-	// Play Damage animation
+	if (!PlayerCharacter.IsValid())
+	{
+		return;
+	}
+	PlayerCharacter->PlayAttackAnimation();
 	ApplyDamage();
 }
 

@@ -127,7 +127,18 @@ bool APumpkinPlotPlundersCharacter::HoldItem(TWeakObjectPtr<AActor> Item, bool I
 	return false;
 }
 
-void APumpkinPlotPlundersCharacter::BeginPlay()
+void APumpkinPlotPlundersCharacter::PlayAttackAnimation() const
+{
+	if (IsValid(AttackAnimation) && AnimationInstance.IsValid())
+	{
+		if (!AnimationInstance->Montage_IsPlaying(AttackAnimation))
+		{
+			AnimationInstance->Montage_Play(AttackAnimation);
+		}
+	}
+}
+
+	void APumpkinPlotPlundersCharacter::BeginPlay()
 {
 	// Call the base class  
 	Super::BeginPlay();
@@ -155,6 +166,11 @@ void APumpkinPlotPlundersCharacter::BeginPlay()
 		{
 			OverlayWidgetInstance->AddToViewport();
 		}
+	}
+
+	if (GetMesh() != nullptr)
+	{
+		AnimationInstance = GetMesh()->GetAnimInstance();
 	}
 }
 

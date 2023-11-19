@@ -83,6 +83,12 @@ class APumpkinPlotPlundersCharacter : public ACharacter,
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UOverlayWidget> OverlayWidgetInstance = nullptr;
 
+
+	UPROPERTY(EditDefaultsOnly, Category="Options|Animation", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UAnimMontage> AttackAnimation = nullptr;
+
+	TWeakObjectPtr<UAnimInstance> AnimationInstance = nullptr;
+	
 public:
 	APumpkinPlotPlundersCharacter();
 	
@@ -92,6 +98,8 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 
 	bool HoldItem(TWeakObjectPtr<AActor> Item, bool IsRake);
+
+	void PlayAttackAnimation() const;
 	
 protected:
 	/** Called for movement input */
