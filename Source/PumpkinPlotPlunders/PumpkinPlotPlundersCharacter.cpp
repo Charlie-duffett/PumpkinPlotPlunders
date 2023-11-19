@@ -109,17 +109,17 @@ bool APumpkinPlotPlundersCharacter::HoldItem(TWeakObjectPtr<AActor> Item, bool I
 	FTransform SocketTransform;
 	if (IsRake)
 	{
-		SocketTransform = GetMesh()->GetSocketTransform("HoldRake", ERelativeTransformSpace::RTS_Component);
-		bHeldSuccessfully = Item->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, "HoldRake");
+		SocketTransform = GetMesh()->GetSocketTransform("HoldRake", ERelativeTransformSpace::RTS_ParentBoneSpace);
+		bHeldSuccessfully = Item->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, "HoldRake");
 	}
 	else
 	{
-		SocketTransform = GetMesh()->GetSocketTransform("HoldWateringCan", ERelativeTransformSpace::RTS_Component);
-		bHeldSuccessfully = Item->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, "HoldWateringCan");
+		SocketTransform = GetMesh()->GetSocketTransform("HoldWateringCan", ERelativeTransformSpace::RTS_ParentBoneSpace);
+		bHeldSuccessfully = Item->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, "HoldWateringCan");
 	}
 
-	Item->SetActorRelativeLocation(SocketTransform.GetLocation());
-	Item->SetActorRelativeRotation(SocketTransform.GetRotation());
+	// Item->SetActorRelativeLocation(SocketTransform.GetLocation());
+	// Item->SetActorRelativeRotation(SocketTransform.GetRotation());
 
 	if (bHeldSuccessfully)
 	{
@@ -136,14 +136,15 @@ void APumpkinPlotPlundersCharacter::PlayAttackAnimation()
 {
 	if (IsValid(AttackAnimation) && AnimationInstance.IsValid())
 	{
-		if (!AnimationInstance->Montage_IsPlaying(AttackAnimation))
+		if (!AnimationInstance->Montage_IsPlaying(AttackAnimation) && HeldItem.IsValid())
 		{
 			AnimationInstance->Montage_Play(AttackAnimation);
 		}
 	}
 }
 
-	void APumpkinPlotPlundersCharacter::BeginPlay()
+
+void APumpkinPlotPlundersCharacter::BeginPlay()
 {
 	// Call the base class  
 	Super::BeginPlay();

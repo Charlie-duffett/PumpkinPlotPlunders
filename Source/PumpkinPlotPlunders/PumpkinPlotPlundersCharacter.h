@@ -155,7 +155,5 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnDropItem();
-
-	void OnAnimationEnd();
 };
 
